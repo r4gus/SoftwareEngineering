@@ -17,13 +17,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     DB.cpp \
+    arbeit.cpp \
     main.cpp \
     mainwindow.cpp \
+    sonstigesprojekt.cpp \
     studiengang.cpp
 
 HEADERS += \
     DB.h \
+    arbeit.h \
     mainwindow.h \
+    sonstigesprojekt.h \
     studiengang.h
 
 FORMS += \

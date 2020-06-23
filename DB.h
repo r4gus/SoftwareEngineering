@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <QDateTime>
 #include "studiengang.h"
+#include "sonstigesprojekt.h"
+
 using namespace std;
 
 /*! \brief singelton representing a data base
@@ -37,7 +39,8 @@ public:
      * If the object does already exist, an exception is thrown. If the value is >= 0
      * the method tries to update the corresponding database entry.
      */
-    void add(Studiengang &s);   //!< insert a Studiengang object into the database
+    int add(Studiengang &s);   //!< insert a Studiengang object into the database
+    int add(SonstigesProjekt &s);
 
 
 private:

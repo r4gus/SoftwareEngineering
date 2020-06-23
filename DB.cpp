@@ -1,4 +1,5 @@
 #include "DB.h"
+
 #include <QDebug>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlDatabase>
@@ -81,7 +82,7 @@ DB::DB()
 DB::~DB()
 {}
 
-void
+int
 DB::add(Studiengang &s)
 {
     QSqlQuery query;
@@ -99,24 +100,35 @@ DB::add(Studiengang &s)
     if( !query.exec(qs) ) {
         throw DatabaseTransactionError(query.lastError().text());
     }
+
+    return query.lastInsertId().toInt();
 }
 
-//DB::add(Arbeit &a)
-//{
-//    QSqlQuery query;
-//    QString qs;
-//    QSqlDatabase db = QSqlDatabase::database(); // retrieve database
+int
+DB::add(SonstigesProjekt &s)
+{
+    QSqlQuery query;
+    QString qs;
+    QSqlDatabase db = QSqlDatabase::database(); // retrieve database
 
-//    if (!db.isValid())  throw InvalidDatabaseError("Invalid Database connection");
+    if (!db.isValid())  throw InvalidDatabaseError("Invalid Database connection");
 
-//    qs = "INSERT INTO arbeit (titel, status, erlaeuterung, studiengang"
+    qs = "INSERT INTO arbeit (titel, status, erlaeuterung, studiengang, dozentid, studentid) VALUES (" +
+         db.driver()->escapeIdentifier(s.titel(), QSqlDriver::FieldName) + ", " +
+         db.driver()->escapeIdentifier(QString(s.abgeschlossen()), QSqlDriver::FieldName) + ", " +
+         db.driver()->escapeIdentifier(s.erlaeuterung(), QSqlDriver::FieldName) + ", " +
+         db.driver()->escapeIdentifier(QString(s.studiengang()->id()), QSqlDriver::FieldName) + ", " +
+         "0, 0)" +
+         ");";
 
-//    log("Query", qs);
-//    if( !query.exec(qs) ) {
-//        qDebug() << query.lastError().type();
-//        throw DatabaseTransactionError(query.lastError().text());
-//    }
-//}
+    log("Query", qs);
+    if( !query.exec(qs) ) {
+        qDebug() << query.lastError().type();
+        throw DatabaseTransactionError(query.lastError().text());
+    }
+
+    return query.lastInsertId().toInt();
+}
 
 bool
 DB::initialize()
