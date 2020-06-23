@@ -4,6 +4,7 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlDriver>
+#include <fstream>
 
 using namespace std;
 
@@ -25,11 +26,50 @@ void log(const QString& type, const QString& msg) {
  */
 DB::DB()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("dev.sqlite");   // name of the database
-    bool ok = db.open();
+    std::ifstream conf;                                     // file stream for config file specified in _conf_path
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE"); // create new SQlite database object
+    string line;                                            // string to hold the path to the database
+    QString name;
+    QString path;
 
-    if( ok ) {
+    // get username
+    name = qgetenv("USER");
+    if(name.isEmpty()) name = qgetenv("USERNAME");
+    // get path to config file
+    path = qgetenv("SE_CONFIG");
+    qDebug() << path;
+
+    /* Set the path to the config file using the
+     * SE_CONFIG environment variable.
+     *
+     * If no path is specified, the default config path is used.
+     */
+    if(path.isEmpty()) {
+        this->_conf_path = "C:\\Users\\" + name + "\\Documents\\db.conf";
+    } else {
+        this->_conf_path = path;
+    }
+    const QString DEFAULT_DB_PATH = "C:\\Users\\" + name + "\\Documents\\db.sqlite";
+
+    conf.open(this->_conf_path.toStdString());          // open config file
+
+    /* Read the first line of the config file and
+     * set it as the path for the database to open.
+     *
+     * If the config file couldn't be opened, the standard path
+     * 'DEFAULT_DB_PATH' is used.
+    */
+    if(conf.is_open()) {
+        getline(conf, line);
+        this->_db_path = QString::fromStdString(line);
+        conf.close();
+    } else {
+        this->_db_path = DEFAULT_DB_PATH;
+    }
+
+    db.setDatabaseName(this->_db_path);   // set name of the database
+
+    if( db.open() ) {
         qDebug() << "Data base set-up successfull.";
     } else {
         qDebug() << db.lastError();

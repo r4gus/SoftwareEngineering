@@ -45,6 +45,8 @@ private:
     ~DB();
     DB(DB const&);              // copy constructor is private
     DB& operator=(DB const&);   // assignment operator is private
+    QString _db_path;
+    QString _conf_path;
 
     /*!
      * \brief Initializes the database.
