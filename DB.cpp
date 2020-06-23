@@ -16,7 +16,6 @@ void log(const QString& type, const QString& msg) {
  *
  * It sets up an SQLite database.
  *
- *
  * After the db is set up it becomes the default connection
  * which can be retrieved using QSqlDatabase::database(), e.g.
  * without the connection name argument.
@@ -58,7 +57,6 @@ DB::add(Studiengang &s)
 
     log("Query", qs);
     if( !query.exec(qs) ) {
-        qDebug() << query.lastError().type();
         throw DatabaseTransactionError(query.lastError().text());
     }
 }

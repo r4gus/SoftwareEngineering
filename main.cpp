@@ -13,7 +13,11 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     Studiengang s = Studiengang("IN-SE", "Bachelor");
-    DB::session().add(s);
+    try {
+        DB::session().add(s);
+    } catch(DatabaseTransactionError &e) {
+        std::cout << "Couldn't add s to database" << std::endl;
+    }
 
     vector<Studiengang> vec = Studiengang::query_all();
     for(auto &e: vec) {
