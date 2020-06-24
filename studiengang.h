@@ -25,7 +25,7 @@ public:
         _id(rhs._id), _schwerpunkt(rhs._schwerpunkt), _abschluss(rhs._abschluss){}        // copy constructor
 
     static vector<Studiengang> query_all();
-    static vector<Studiengang> query(QString s);
+    static vector<Studiengang> query(QString &s);
 
     operator QString () const;
 private:
@@ -35,5 +35,7 @@ private:
 };
 
 std::ostream & operator << (std::ostream &o, const Studiengang &s);
+
+std::vector<std::tuple<QString, QString>> key_val_split(QString &s);
 
 #endif // STUDIENGANG_H

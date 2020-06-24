@@ -148,7 +148,6 @@ DB::add(SonstigesProjekt &s)
 
     log("Query", qs);
     if( !query.exec(qs) ) {
-        qDebug() << query.lastError().type();
         throw DatabaseTransactionError(query.lastError().text());
     }
 
@@ -302,15 +301,22 @@ DB::test(QSqlDatabase &db)
 
 
     // add studiengänge
-    QVector<QString> s_names = {"IN-AI", "IN-IS", "IN_MI", "IN-SE", "MIN", "MLD"};
+    QVector<QString> s_names = {"IN-AI", "IN-IS", "IN-MI", "IN-SE", "MIN", "MLD"};
     QVector<QString> s_types = {"Bachelor", "Master"};
     for(auto &sn : s_names) {
         for(auto &st : s_types) {
-            query.prepare("INSERT INTO studiengang (schwerpunkt, abschluss "
+            qDebug() << sn << " : " << st;
+            query.prepare("INSERT INTO studiengang (schwerpunkt, abschluss) "
                           "VALUES (:schwerpunk, :abschluss)");
             query.bindValue(":schwerpunk", sn);
             query.bindValue(":abschluss", st);
             query.exec();
+
+
+            if( query.lastError().isValid() ) {
+                qDebug() << "Database error in DB::test: " << query.lastError().text();
+                return false;
+            }
         }
     }
 
@@ -319,13 +325,12 @@ DB::test(QSqlDatabase &db)
 }
 
 /*!
- * \brief DB::clean is used to empty all existing tables of a database.
+ * \brief DB::clean is used to drop all existing tables of a database.
  * \param db The database to empty
  * \return true on success, false otherwise
  *
- * The method goes through all tables and truncates every one of them.
+ * The method goes through all tables and drops every one of them.
  *
- * [!IMPORTANT!]: The tables are not droped!
  */
 bool DB::clean(QSqlDatabase &db)
 {
@@ -335,9 +340,13 @@ bool DB::clean(QSqlDatabase &db)
     if(!db.isValid()) return false;
 
     for(auto &t : tables) {
-        query.prepare("TRUNCATE TABLE :table");
-        query.bindValue(":table", t);
-        if(!query.exec()) return false;
+        qDebug() << t;
+        query.exec("DROP TABLE " + t);
+
+        if( query.lastError().isValid() ) {
+            qDebug() << "Database error in DB::clean: " << query.lastError().text();
+            //return false;
+        }
     }
 
     return true;
