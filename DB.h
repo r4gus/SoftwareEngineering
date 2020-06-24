@@ -5,6 +5,7 @@
 #include <QException>
 #include <QDebug>
 #include <QDateTime>
+#include <QSqlDatabase>
 #include "studiengang.h"
 #include "sonstigesprojekt.h"
 
@@ -42,6 +43,28 @@ public:
     int add(Studiengang &s);   //!< insert a Studiengang object into the database
     int add(SonstigesProjekt &s);
 
+    /*!
+     * \brief Initializes the database.
+     *
+     * Creates the required tables if they don't exist.
+     *
+     * \return true on success, false otherwise.
+     */
+    static bool initialize(QSqlDatabase &db);
+
+    /*!
+     * \brief Populate the given database with test data.
+     * \param db The database to populate
+     * \return ture on success, false otherwise
+     */
+    static bool test(QSqlDatabase &db);
+
+    /*!
+     * \brief clean drops all tables and initializes the database again.
+     * \param db The database to clean
+     * \return true on success, false otherwise
+     */
+    static bool clean(QSqlDatabase &db);
 
 private:
     DB();
@@ -51,14 +74,6 @@ private:
     QString _db_path;
     QString _conf_path;
 
-    /*!
-     * \brief Initializes the database.
-     *
-     * Creates the required tables if they don't exist.
-     *
-     * \return true on success, false otherwise.
-     */
-    bool initialize();
 };
 
 /* ############################### EXCETPION ################################### */

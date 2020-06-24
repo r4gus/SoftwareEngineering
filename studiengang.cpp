@@ -19,6 +19,18 @@ Studiengang::query_all()
     return vec;
 }
 
+vector<Studiengang>
+Studiengang::query(QString s)
+{
+    vector<Studiengang> vec;
+    QSqlDatabase db = QSqlDatabase::database();
+    QSqlQuery query;
+
+
+
+    return vec;
+}
+
 Studiengang::operator QString() const
 {
     return "{ schwerpunkt: " + _schwerpunkt + ", abschluss: " + _abschluss + "}";

@@ -2,7 +2,6 @@
 
 #include <QDebug>
 #include <QtSql/QSqlError>
-#include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlDriver>
 #include <fstream>
@@ -76,12 +75,13 @@ DB::DB()
         qDebug() << db.lastError();
     }
 
-    initialize(); // init database
+    initialize(db); // init database
 }
 
 DB::~DB()
 {}
 
+/*
 int
 DB::add(Studiengang &s)
 {
@@ -98,6 +98,31 @@ DB::add(Studiengang &s)
 
     log("Query", qs);
     if( !query.exec(qs) ) {
+        throw DatabaseTransactionError(query.lastError().text());
+    }
+
+    return query.lastInsertId().toInt();
+}
+*/
+
+int
+DB::add(Studiengang &s)
+{
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database(); // retrieve database
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+
+    query.prepare("INSERT INTO studiengang (schwerpunkt, abschluss) "
+                  "VALUES (:schwerpunk, :abschluss)");
+    query.bindValue(":schwerpunk", s.schwerpunkt());
+    query.bindValue(":abschluss", s.abschluss());
+
+    if( !query.exec() ) {
+        if(query.lastError().nativeErrorCode() == 19) { // 19 = SQLite constraint violated
+            // check if object does already exist and retrieve it
+        }
+        qDebug() << query.lastError().nativeErrorCode();
         throw DatabaseTransactionError(query.lastError().text());
     }
 
@@ -130,8 +155,13 @@ DB::add(SonstigesProjekt &s)
     return query.lastInsertId().toInt();
 }
 
+/*!
+ * \brief DB::initialize Creates all required tables if they do not exist.
+ * \param db The database to operate on
+ * \return true on success, false otherwise
+ */
 bool
-DB::initialize()
+DB::initialize(QSqlDatabase &db)
 {
     QString studiengang = "CREATE TABLE studiengang ("
                           "     studiengangID INTEGER PRIMARY KEY,"
@@ -186,8 +216,9 @@ DB::initialize()
             " FOREIGN KEY (arbeitID) REFERENCES"
             "   arbeit (arbeitID) ON DELETE CASCADE);";
 
-    QSqlDatabase db = QSqlDatabase::database(); // retrieve database
     QSqlQuery query;
+
+    if( !db.isValid() ) return false;
 
     if( !db.tables().contains("studiengang") ) {
         qDebug() << "Insert table studiengang into database";
@@ -255,6 +286,59 @@ DB::initialize()
         }
     }
 
-    qDebug() << "Blablub hat funktioniert:";
+    return true;
+}
+
+/*!
+ * \brief DB::test is used to populate the database tables with test data.
+ * \param db The database to populate
+ * \return true on success, false otherwise
+ */
+bool
+DB::test(QSqlDatabase &db)
+{
+    QSqlQuery query;
+    if(!db.isValid()) return false;
+
+
+    // add studiengänge
+    QVector<QString> s_names = {"IN-AI", "IN-IS", "IN_MI", "IN-SE", "MIN", "MLD"};
+    QVector<QString> s_types = {"Bachelor", "Master"};
+    for(auto &sn : s_names) {
+        for(auto &st : s_types) {
+            query.prepare("INSERT INTO studiengang (schwerpunkt, abschluss "
+                          "VALUES (:schwerpunk, :abschluss)");
+            query.bindValue(":schwerpunk", sn);
+            query.bindValue(":abschluss", st);
+            query.exec();
+        }
+    }
+
+
+    return true;
+}
+
+/*!
+ * \brief DB::clean is used to empty all existing tables of a database.
+ * \param db The database to empty
+ * \return true on success, false otherwise
+ *
+ * The method goes through all tables and truncates every one of them.
+ *
+ * [!IMPORTANT!]: The tables are not droped!
+ */
+bool DB::clean(QSqlDatabase &db)
+{
+    QSqlQuery query;
+    QStringList tables = db.tables();
+
+    if(!db.isValid()) return false;
+
+    for(auto &t : tables) {
+        query.prepare("TRUNCATE TABLE :table");
+        query.bindValue(":table", t);
+        if(!query.exec()) return false;
+    }
+
     return true;
 }

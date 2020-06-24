@@ -18,10 +18,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     DB.cpp \
     arbeit.cpp \
-    main.cpp \
     mainwindow.cpp \
+    main.cpp \
     sonstigesprojekt.cpp \
-    studiengang.cpp
+    studiengang.cpp \
+    studiengang_test.cpp
 
 HEADERS += \
     DB.h \
@@ -40,3 +41,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     README.md
+
+INCLUDEPATH += C:/boost/boost_1_73_0
