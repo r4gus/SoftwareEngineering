@@ -345,7 +345,7 @@ bool DB::clean(QSqlDatabase &db)
 
         if( query.lastError().isValid() ) {
             qDebug() << "Database error in DB::clean: " << query.lastError().text();
-            //return false;
+            return false;
         }
     }
 

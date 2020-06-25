@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE( query_all_1 )
 
 BOOST_AUTO_TEST_CASE( query_1 )
 {
-    QString s = "schwerpunkt=IN-AI";
+    QString s = "schwerpunkt = 'IN-AI'";
     std::vector<Studiengang> vec = Studiengang::query(s);
 
     BOOST_CHECK_EQUAL(vec.size(), 2);
@@ -75,12 +75,20 @@ BOOST_AUTO_TEST_CASE( query_2 )
 
 BOOST_AUTO_TEST_CASE( query_3 )
 {
-    QString s = "schwerpunkt=IN-AI,abschluss=Master";
+    QString s = "schwerpunkt = 'IN-AI' and abschluss = 'Master'";
     std::vector<Studiengang> vec = Studiengang::query(s);
 
     BOOST_CHECK_EQUAL(vec.size(), 1);
     BOOST_CHECK(vec[0].schwerpunkt() == "IN-AI");
     BOOST_CHECK(vec[0].abschluss() == "Master");
+}
+
+BOOST_AUTO_TEST_CASE( query_4 )
+{
+    QString s = "schwerpunkt = 'IN-AI' or schwerpunkt = 'IN-IS'";
+    std::vector<Studiengang> vec = Studiengang::query(s);
+
+    BOOST_CHECK_EQUAL(vec.size(), 4);
 }
 
 

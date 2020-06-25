@@ -14,6 +14,8 @@
  *
  * If the pattern of the string differs from the pattern of the example above
  * the result is undefined.
+ *
+ * THIS FUNCTION IS DEPRECATED AND NO LONGER USED
  */
 std::vector<std::tuple<QString, QString>>
 key_val_split(QString &s)
@@ -63,7 +65,7 @@ Studiengang::query_all()
  * \param s The condition string
  * \return A vector of Studiengang objects
  *
- * The method expects a string of type: "key1=val1,key2=val2"
+ * The method expects a string of type: "key1 >= 'val1' and key2 = 'val2' or ..."
  *
  * The method acts like query_all() if an empty string is provided.
  */
@@ -73,24 +75,12 @@ Studiengang::query(QString &s)
     vector<Studiengang> vec;
     QSqlDatabase db = QSqlDatabase::database();
     QSqlQuery query;
-    std::vector<std::tuple<QString, QString>> kvs = key_val_split(s); // vector of k:v tuples
     QString qs;
-    size_t i = 0;
-    size_t l = kvs.size();
 
     if(!db.isValid()) throw InvalidDatabaseError();
 
     qs += "SELECT schwerpunkt, abschluss FROM studiengang ";
-    if(l > 0) qs += "WHERE "; // only if arguments have been passed
-
-    // build the where part of the string
-    for(auto kv : kvs) {
-        qs += std::get<0>(kv) + " = '" + std::get<1>(kv) + "' ";
-
-        if(i < l - 1) qs += "AND "; // skip and for the end
-        ++i;
-    }
-    qs += ";";
+    if(!s.isEmpty()) qs += "WHERE " + s + ";";
 
     log("Query", qs);
     if( !query.exec(qs) ) {
