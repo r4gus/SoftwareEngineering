@@ -177,5 +177,5 @@ Project Link: [https://github.com/r4gus/SoftwareEngineering](https://github.com/
 [issues-shield]: https://img.shields.io/github/issues/r4gus/SoftwareEngineering?style=flat-square
 [issues-url]: https://github.com/r4gus/SoftwareEngineering/issues
 [license-shield]: https://img.shields.io/github/license/r4gus/SoftwareEngineering?style=flat-square
-[license-url]: https://github.com/r4gus/SoftwareEngineering/LICENSE.txt
+[license-url]: https://github.com/r4gus/SoftwareEngineering/blob/master/LICENSE.txt
 [product-screenshot]: images/screenshot.png
