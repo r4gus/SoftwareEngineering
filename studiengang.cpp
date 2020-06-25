@@ -36,6 +36,10 @@ key_val_split(QString &s)
     return vec;
 }
 
+/*!
+ * \brief Studiengang::query_all returns a vector with all objects from the database.
+ * \return A vector of Studiengang objects
+ */
 vector<Studiengang>
 Studiengang::query_all()
 {
@@ -54,6 +58,15 @@ Studiengang::query_all()
     return vec;
 }
 
+/*!
+ * \brief Studiengang::query Get a subset of the database entries as objects
+ * \param s The condition string
+ * \return A vector of Studiengang objects
+ *
+ * The method expects a string of type: "key1=val1,key2=val2"
+ *
+ * The method acts like query_all() if an empty string is provided.
+ */
 vector<Studiengang>
 Studiengang::query(QString &s)
 {
@@ -61,11 +74,14 @@ Studiengang::query(QString &s)
     QSqlDatabase db = QSqlDatabase::database();
     QSqlQuery query;
     std::vector<std::tuple<QString, QString>> kvs = key_val_split(s); // vector of k:v tuples
-    QString qs = "SELECT schwerpunkt, abschluss FROM studiengang WHERE ";
+    QString qs;
     size_t i = 0;
     size_t l = kvs.size();
 
     if(!db.isValid()) throw InvalidDatabaseError();
+
+    qs += "SELECT schwerpunkt, abschluss FROM studiengang ";
+    if(l > 0) qs += "WHERE "; // only if arguments have been passed
 
     // build the where part of the string
     for(auto kv : kvs) {

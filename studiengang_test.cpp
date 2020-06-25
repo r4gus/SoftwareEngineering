@@ -12,10 +12,13 @@
 #include "DB.h"
 #include "studiengang.h"    // the class to be tested
 
-struct Fixture {
-    Fixture() {
-        BOOST_TEST_MESSAGE("setup fixture for studiengang_test");
+struct GlobalFixture {
+    GlobalFixture() {
+        BOOST_TEST_MESSAGE("global fixture for studiengang_test");
+    }
 
+    void setup() {
+        BOOST_TEST_MESSAGE("setup global fixture");
         db = QSqlDatabase::addDatabase("QSQLITE");
         db.setDatabaseName("test");
         db.open();
@@ -27,17 +30,24 @@ struct Fixture {
         BOOST_REQUIRE_EQUAL(DB::test(db), true);
     }
 
-    ~Fixture() {
-        BOOST_TEST_MESSAGE("teardown fixture for studiengang_test");
-        DB::clean(db);      // clear all tables
+    void teardown() {
+        BOOST_TEST_MESSAGE("teardown global fixture");
         db.close();
     }
+
+    ~GlobalFixture() {
+        BOOST_TEST_MESSAGE("end of global fixture for studiengang_test");
+    }
+
 
     QSqlDatabase db;
 };
 
+
+BOOST_TEST_GLOBAL_FIXTURE(GlobalFixture);
+
 /*#####################################################################*/
-BOOST_FIXTURE_TEST_SUITE(studiengang_suit, Fixture) // test suit beginn
+BOOST_AUTO_TEST_SUITE(studiengang_suit) // test suit beginn
 
 BOOST_AUTO_TEST_CASE( query_all_1 )
 {
@@ -53,6 +63,26 @@ BOOST_AUTO_TEST_CASE( query_1 )
 
     BOOST_CHECK_EQUAL(vec.size(), 2);
 }
+
+BOOST_AUTO_TEST_CASE( query_2 )
+{
+    // an empty string should act like a query_all()
+    QString s = "";
+    std::vector<Studiengang> vec = Studiengang::query(s);
+
+    BOOST_CHECK_EQUAL(vec.size(), 12);
+}
+
+BOOST_AUTO_TEST_CASE( query_3 )
+{
+    QString s = "schwerpunkt=IN-AI,abschluss=Master";
+    std::vector<Studiengang> vec = Studiengang::query(s);
+
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+    BOOST_CHECK(vec[0].schwerpunkt() == "IN-AI");
+    BOOST_CHECK(vec[0].abschluss() == "Master");
+}
+
 
 BOOST_AUTO_TEST_SUITE_END() // test suit end
 /*#####################################################################*/
@@ -70,4 +100,13 @@ BOOST_AUTO_TEST_CASE( split_1 )
         BOOST_CHECK(std::get<1>(kv) == vals[i]);
         ++i;
     }
+}
+
+BOOST_AUTO_TEST_CASE( split_2 )
+{
+    // check for empty string
+    QString s = "";
+    std::vector<std::tuple<QString, QString>> vec = key_val_split(s);
+
+    BOOST_CHECK_EQUAL(vec.size(), 0);
 }
