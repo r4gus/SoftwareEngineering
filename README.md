@@ -1,5 +1,4 @@
 # Software Engineering Poject
-## Authors: Tobias Pfisterer, Julian Sobott, Lukas Mendel, David Sugar
 
 <!-- PROJECT SHIELDS -->
 <!--
@@ -13,7 +12,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-<!--[![MIT License][license-shield]][license-url]-->
+[![MIT License][license-shield]][license-url]
 
 
 
@@ -24,12 +23,12 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
+  <h3 align="center">Projektor</h3>
 
   <p align="center">
     A project management software for the Aalen university
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/r4gus/SoftwareEngineering"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/r4gus/SoftwareEngineering/issues">Report Bug</a>
@@ -107,14 +106,13 @@ __SE_CONFIG__ environment variable.
 export SE_CONFIG=/path/to/config/file
 ```
 
+#### Config file (Windows)
 ```
-#Config file
-# Windows:
 C:\path\to\database.sqlite
 ```
 
 If no config file is specified, the default path
-(Windows: C:\Users\<username>\Documents\db.sqlite) is used.
+(Windows: C:\Users\ <username> \Documents\db.sqlite) is used.
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -136,11 +134,10 @@ Contributions are what make the open source community such an amazing place to b
 -->
 
 
-<!-- LICENSE
+LICENSE
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
--->
 
 
 <!-- CONTACT -->
