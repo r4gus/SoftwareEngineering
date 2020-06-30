@@ -81,30 +81,14 @@ DB::DB()
 DB::~DB()
 {}
 
-/*
-int
-DB::add(Studiengang &s)
-{
-    QSqlQuery query;
-    QString qs;
-    QSqlDatabase db = QSqlDatabase::database(); // retrieve database
-
-    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
-
-    qs = "INSERT INTO studiengang (schwerpunkt, abschluss) VALUES (" +
-         db.driver()->escapeIdentifier(s.schwerpunkt(), QSqlDriver::FieldName) +
-         ", " +
-         db.driver()->escapeIdentifier(s.abschluss(), QSqlDriver::FieldName) + ");";
-
-    log("Query", qs);
-    if( !query.exec(qs) ) {
-        throw DatabaseTransactionError(query.lastError().text());
-    }
-
-    return query.lastInsertId().toInt();
-}
-*/
-
+/*!
+ * \brief DB::add Adds an Studiengang object to the database.
+ * \param s The object to add
+ * \return the ID of the Studiengang object inserted.
+ *
+ * The ID is set by the database itself. If the object does already exist, the
+ * id of that object is returned to the caller.
+ */
 int
 DB::add(Studiengang &s)
 {
@@ -119,10 +103,44 @@ DB::add(Studiengang &s)
     query.bindValue(":abschluss", s.abschluss());
 
     if( !query.exec() ) {
-        if(query.lastError().nativeErrorCode() == 19) { // 19 = SQLite constraint violated
-            // check if object does already exist and retrieve it
-        }
-        qDebug() << query.lastError().nativeErrorCode();
+        // check if object does already exist and retrieve it
+        QString query_string = "schwerpunkt = '" + s.schwerpunkt() + "' and abschluss = '" + s.abschluss() + "'";
+        std::vector<Studiengang> vec = Studiengang::query(query_string);
+
+        if(vec.size() > 0) return vec[0].id();
+
+        throw DatabaseTransactionError(query.lastError().text());
+    }
+
+    return query.lastInsertId().toInt();
+}
+
+int
+DB::add(Nutzer &s)
+{
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+
+    query.prepare("INSERT INTO nutzer (VName, NName, email, password, salt, workFactor, role, active) "
+                  "VALUES (:vname, :nname, :email, :password, :salt, :workFactor, :role, :active)");
+    query.bindValue(":vname", s.vname());
+    query.bindValue(":nname", s.nname());
+    query.bindValue(":email", s.email());
+    query.bindValue(":password", s.password_hash());
+    query.bindValue(":salt", s.password_salt());
+    query.bindValue(":workFactor", s.personal_work_factor());
+    query.bindValue(":role", s.role());
+    query.bindValue(":active", s.active());
+
+    if(!query.exec()) {
+        // check if object does already exist and retrieve it
+        QString query_string = "email = '" + s.email() +"'";
+        std::vector<Studiengang> vec = Studiengang::query(query_string);
+
+        if(vec.size() > 0) return vec[0].id();
+
         throw DatabaseTransactionError(query.lastError().text());
     }
 
@@ -197,8 +215,10 @@ DB::initialize(QSqlDatabase &db)
                 " VName TEXT NOT NULL,"
                 " NName TEXT NOT NULL,"
                 " email TEXT NOT NULL UNIQUE,"
-                " passwort TEXT NOT NULL,"
-                " rolle INTEGER NOT NULL,"
+                " password TEXT NOT NULL,"
+                " salt TEXT NOT NULL,"
+                " workFactor INTEGER NOT NULL,"
+                " role INTEGER NOT NULL,"
                 " active INTEGER NOT NULL);";
 
     QString abschlussarbeit = "CREATE TABLE abschlussarbeit ("
@@ -305,7 +325,7 @@ DB::test(QSqlDatabase &db)
     QVector<QString> s_types = {"Bachelor", "Master"};
     for(auto &sn : s_names) {
         for(auto &st : s_types) {
-            qDebug() << sn << " : " << st;
+            qDebug() << "Insert: " << sn << " : " << st;
             query.prepare("INSERT INTO studiengang (schwerpunkt, abschluss) "
                           "VALUES (:schwerpunk, :abschluss)");
             query.bindValue(":schwerpunk", sn);
@@ -320,6 +340,24 @@ DB::test(QSqlDatabase &db)
         }
     }
 
+    // ad nutzer
+    Nutzer nutzer1("Roland", "Dietrich", "rd@hs.aa", Nutzer::Role::dozent);
+    Nutzer nutzer2("Christian", "Heinlein", "km@hs.aa", Nutzer::Role::dozent);
+    Nutzer nutzer3("Detlef", "Küpper", "dk@hs.aa", Nutzer::Role::dozent);
+    nutzer1.set_password("RD");
+    nutzer2.set_password("CH");
+    nutzer3.set_password("DK");
+
+    try {
+        DB::session().add(nutzer1);
+        DB::session().add(nutzer2);
+        DB::session().add(nutzer3);
+    } catch(exception &e) {
+        if( query.lastError().isValid() ) {
+            qDebug() << "Database error in DB::test: " << query.lastError().text();
+            return false;
+        }
+    }
 
     return true;
 }

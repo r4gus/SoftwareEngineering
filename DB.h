@@ -8,6 +8,7 @@
 #include <QSqlDatabase>
 #include "studiengang.h"
 #include "sonstigesprojekt.h"
+#include "nutzer.h"
 
 using namespace std;
 
@@ -41,6 +42,7 @@ public:
      * the method tries to update the corresponding database entry.
      */
     int add(Studiengang &s);   //!< insert a Studiengang object into the database
+    int add(Nutzer &s);
     int add(SonstigesProjekt &s);
 
     /*!

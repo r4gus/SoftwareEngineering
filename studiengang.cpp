@@ -45,19 +45,8 @@ key_val_split(QString &s)
 vector<Studiengang>
 Studiengang::query_all()
 {
-    vector<Studiengang> vec;
-    QSqlDatabase db = QSqlDatabase::database(); // retrieve database
-
-    if(!db.isValid()) throw InvalidDatabaseError();
-
-    QSqlQuery query("SELECT schwerpunkt, abschluss from studiengang;");
-    while( query.next() ) {
-        QString schwerpunkt = query.value(0).toString();
-        QString abschluss = query.value(1).toString();
-        vec.push_back(Studiengang(schwerpunkt, abschluss));
-    }
-
-    return vec;
+    QString query_string = "";
+    return Studiengang::query(query_string);
 }
 
 /*!
@@ -79,7 +68,7 @@ Studiengang::query(QString &s)
 
     if(!db.isValid()) throw InvalidDatabaseError();
 
-    qs += "SELECT schwerpunkt, abschluss FROM studiengang ";
+    qs += "SELECT studiengangID, schwerpunkt, abschluss FROM studiengang ";
     if(!s.isEmpty()) qs += "WHERE " + s + ";";
 
     log("Query", qs);
@@ -88,9 +77,10 @@ Studiengang::query(QString &s)
     }
 
     while( query.next() ) {
-        QString schwerpunkt = query.value(0).toString();
-        QString abschluss = query.value(1).toString();
-        vec.push_back(Studiengang(schwerpunkt, abschluss));
+        int id = query.value(0).toInt();
+        QString schwerpunkt = query.value(1).toString();
+        QString abschluss = query.value(2).toString();
+        vec.push_back(Studiengang(id, schwerpunkt, abschluss));
     }
 
     return vec;

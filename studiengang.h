@@ -15,6 +15,8 @@ public:
     void set_abschluss(QString& abschluss) { _abschluss = abschluss; }
     void set_schwerpunkt(QString& schwerpunkt) { _schwerpunkt = schwerpunkt; }
 
+    Studiengang() {}
+
     Studiengang(QString schwerpunkt, QString abschluss) :
         _schwerpunkt(schwerpunkt), _abschluss(abschluss){}
 

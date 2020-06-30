@@ -21,9 +21,9 @@ struct GlobalFixture {
 
     void setup() {
         BOOST_TEST_MESSAGE("setup global fixture");
-        db = QSqlDatabase::addDatabase("QSQLITE");
-        db.setDatabaseName("test");
-        db.open();
+        DB::session();
+
+        db = QSqlDatabase::database();
 
         BOOST_REQUIRE_EQUAL(db.isValid(), true);
 
@@ -95,9 +95,12 @@ BOOST_AUTO_TEST_CASE( query_4 )
 }
 
 
+
+
 BOOST_AUTO_TEST_SUITE_END() // test suit end
 /*#####################################################################
-  ###############          NUTZER         #############################*/
+  ###############          NUTZER         #############################
+  #####################################################################*/
 BOOST_AUTO_TEST_SUITE(nutzer_suit) // test suit beginn
 
 BOOST_AUTO_TEST_CASE( pw_hashing_test_1 )
@@ -130,6 +133,71 @@ BOOST_AUTO_TEST_CASE( password_deny_test_1 )
 
     BOOST_CHECK_EQUAL(user.check_password(pw2), false);
 }
+
+BOOST_AUTO_TEST_CASE( role_test_1 )
+{
+    Nutzer user;
+    user.setRole(Nutzer::Role::student);
+
+    BOOST_CHECK_EQUAL(user.is_student(), true);
+    BOOST_CHECK_EQUAL(user.is_dozent(), false);
+    BOOST_CHECK_EQUAL(user.is_administrator(), false);
+}
+
+BOOST_AUTO_TEST_CASE( role_test_2 )
+{
+    Nutzer user;
+    user.setRole(Nutzer::Role::dozent);
+
+    BOOST_CHECK_EQUAL(user.is_student(), false);
+    BOOST_CHECK_EQUAL(user.is_dozent(), true);
+    BOOST_CHECK_EQUAL(user.is_administrator(), false);
+}
+
+BOOST_AUTO_TEST_CASE( role_test_3 )
+{
+    Nutzer user;
+    user.setRole(Nutzer::Role::administrator);
+
+    BOOST_CHECK_EQUAL(user.is_student(), false);
+    BOOST_CHECK_EQUAL(user.is_dozent(), false);
+    BOOST_CHECK_EQUAL(user.is_administrator(), true);
+}
+
+BOOST_AUTO_TEST_CASE( query_all_1 )
+{
+    std::vector<Nutzer> vec = Nutzer::query_all();
+
+    BOOST_CHECK_EQUAL(vec.size(), 3);
+}
+
+BOOST_AUTO_TEST_CASE( query_1 )
+{
+    std::vector<Nutzer> vec;
+    QString query_string = "email = 'dk@hs.aa'";
+    vec = Nutzer::query(query_string);
+
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+    BOOST_CHECK(vec[0].vname() == "Detlef");
+    BOOST_CHECK(vec[0].nname() == "Küpper");
+    BOOST_CHECK_EQUAL(vec[0].check_password("DK"), true);
+}
+
+BOOST_AUTO_TEST_SUITE_END() // test suit end
+
+/*#####################################################################
+  ###############          DB             #############################
+  #####################################################################*/
+BOOST_AUTO_TEST_SUITE(db_suit) // test suit beginn
+
+BOOST_AUTO_TEST_CASE( db_add_studiengang_test_1 )
+{
+    Studiengang studiengang = Studiengang("IN-MI", "Bachelor");
+    int id = DB::session().add(studiengang);
+
+    BOOST_CHECK_EQUAL(id, 5);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END() // test suit end
 /*#####################################################################*/
