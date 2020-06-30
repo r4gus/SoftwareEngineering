@@ -20,14 +20,18 @@ SOURCES += \
     arbeit.cpp \
     mainwindow.cpp \
     main.cpp \
+    nutzer.cpp \
+    sha512.cpp \
     sonstigesprojekt.cpp \
     studiengang.cpp \
-    studiengang_test.cpp
+    test.cpp
 
 HEADERS += \
     DB.h \
     arbeit.h \
     mainwindow.h \
+    nutzer.h \
+    sha512.h \
     sonstigesprojekt.h \
     studiengang.h
 
