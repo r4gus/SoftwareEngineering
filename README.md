@@ -112,7 +112,7 @@ C:\path\to\database.sqlite
 ```
 
 If no config file is specified, the default path
-(Windows: C:\Users\%USERNAME%\Documents\db.sqlite) is used.
+(Windows: C:\Users\\%USERNAME%\Documents\db.sqlite) is used.
 
 <!-- ROADMAP -->
 ## Roadmap
