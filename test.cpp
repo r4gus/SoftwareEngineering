@@ -112,6 +112,43 @@ BOOST_AUTO_TEST_CASE( pw_hashing_test_1 )
     BOOST_CHECK(ouput == expec);
 }
 
+BOOST_AUTO_TEST_CASE( pw_hashing_test_2 )
+{
+    QString input = " !#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+    std::cout << input.toStdString() << std::endl;
+    QString ouput = sha512(input);
+    QString expec = "339734dfadaffd7165e2abc2a0d3323b2dc4c1ebe491e216e8a441f8e1c7acbd03a6e3549e8d6cd6ae19df4e247c820559b6d4137cad86316ea359341c1db6f5";
+
+    BOOST_CHECK(ouput == expec);
+}
+
+BOOST_AUTO_TEST_CASE( pw_hashing_test_3 )
+{
+    QString input = "";
+    QString ouput = sha512(input);
+    QString expec = "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e";
+
+    BOOST_CHECK(ouput == expec);
+}
+
+BOOST_AUTO_TEST_CASE( pw_hashing_test_4 )
+{
+    QString input = "                     ";
+    QString ouput = sha512(input);
+    QString expec = "8d912bfd3922a2e7a17731dbfe6eeabfff60681c183b12b1d969765fcd480ebe676c7f676571bbe6c431c3844bd2b5530d44d07d33c5ce0457319d8775b7dbc6";
+
+    BOOST_CHECK(ouput == expec);
+}
+
+BOOST_AUTO_TEST_CASE( pw_hashing_test_5 )
+{
+    QString input = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïð";
+    QString ouput = sha512(input);
+    QString expec = "8b542254efbe6d99556e5d161d7a7c3974a41dd87c2898876ed2bca9e63ab195b9d99f263b3a2258af785ae3f90df32e0b11d9c3e09b63b4120a2f5c1b95d117";
+
+    BOOST_CHECK(ouput == expec);
+}
+
 BOOST_AUTO_TEST_CASE( password_accept_test_1 )
 {
     Nutzer user;
@@ -123,6 +160,19 @@ BOOST_AUTO_TEST_CASE( password_accept_test_1 )
     BOOST_CHECK_EQUAL(user.check_password(pw2), true);
 }
 
+BOOST_AUTO_TEST_CASE( password_accept_test_2 )
+{
+    Nutzer user;
+    QString pw1 = " !#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+    QString pw2 = " !#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+
+    user.set_password(pw1);
+
+    BOOST_CHECK_EQUAL(user.check_password(pw2), true);
+}
+
+
+
 BOOST_AUTO_TEST_CASE( password_deny_test_1 )
 {
     Nutzer user;
@@ -132,6 +182,21 @@ BOOST_AUTO_TEST_CASE( password_deny_test_1 )
     user.set_password(pw1);
 
     BOOST_CHECK_EQUAL(user.check_password(pw2), false);
+}
+
+BOOST_AUTO_TEST_CASE( password_special_chars_test1 )
+{
+    Nutzer user;
+    QString pw1 = "#'.^`~12äöüß<,>}";
+    QString pw2 = "#'.^`~12äöüß<,>}";
+    QString pw3 = "#";
+    QString pw4 = "";
+
+    user.set_password(pw1);
+
+    BOOST_CHECK_EQUAL(user.check_password(pw2), true);
+    BOOST_CHECK_EQUAL(user.check_password(pw3), false);
+    BOOST_CHECK_EQUAL(user.check_password(pw4), false);
 }
 
 BOOST_AUTO_TEST_CASE( role_test_1 )
