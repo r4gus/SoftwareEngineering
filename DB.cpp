@@ -170,8 +170,6 @@ DB::add(SonstigesProjekt &s)
         throw e;
     }
 
-    qDebug() << "one";
-
     // add studiengang to database if id <= -1
     try {
         if(s.studiengang().id() <= -1) {
@@ -186,9 +184,6 @@ DB::add(SonstigesProjekt &s)
     }
 
 
-    qDebug() << "two";
-
-
     // add student to database if id <= -1
     try {
         if(s.bearbeiter().id() <= -1) {
@@ -201,9 +196,6 @@ DB::add(SonstigesProjekt &s)
         log("error", "in add(ARBEIT): While potentially inserting student into database");
         throw e;
     }
-
-    qDebug() << "three";
-
 
     query.prepare("INSERT INTO arbeit (titel, status, erlaeuterung, studiengangID, dozentID, studentID) "
                   "VALUES (:titel, :status, :erl, :studiengang_id, :d_id, :s_id)");
@@ -226,8 +218,6 @@ DB::add(SonstigesProjekt &s)
         ret_val = query.lastInsertId().toInt();
 
     }
-
-    qDebug() << "four";
 
     for(auto e : s.stichwortliste()) {
         QString str = "INSERT INTO stichworte (arbeitID, stichwort) VALUES (" + QString::number(ret_val) + ", " + e + ");";
