@@ -167,7 +167,7 @@ void Nutzer::setPersonal_work_factor(unsigned int personal_work_factor)
 /* #################### QUERY ####################################################*/
 
 /*!
- * \brief Nutzer::query_all returns a vector with all objects from the database.
+ * \brief query_all returns a vector with all objects from the database.
  * \return A vector of Nutzer objects
  */
 std::vector<Nutzer>
@@ -178,7 +178,7 @@ Nutzer::query_all()
 }
 
 /*!
- * \brief Nutzer::query Get a subset of the database entries as objects
+ * \brief query Get a subset of the database entries as objects
  * \param s The condition string
  * \return A vector of Studiengang objects
  *

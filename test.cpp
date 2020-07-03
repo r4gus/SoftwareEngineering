@@ -235,7 +235,7 @@ BOOST_AUTO_TEST_CASE( query_all_1 )
 {
     std::vector<Nutzer> vec = Nutzer::query_all();
 
-    BOOST_CHECK_EQUAL(vec.size(), 3);
+    BOOST_CHECK_EQUAL(vec.size(), 4);
 }
 
 BOOST_AUTO_TEST_CASE( query_1 )

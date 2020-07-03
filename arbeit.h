@@ -2,6 +2,7 @@
 #define ARBEIT_H
 
 #include "studiengang.h"
+#include "nutzer.h"
 
 #include <QString>
 #include <QVector>
@@ -15,9 +16,13 @@ class Arbeit
     bool _abgeschlossen;
     QString _erlaeuterung;
 
-    std::shared_ptr<Studiengang> _studiengang;
+    Studiengang _studiengang;
+    Nutzer _bearbeiter;
+    Nutzer _professor;
 
 public:
+    Arbeit() {}
+
     Arbeit(QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         _titel(titel), _stichwortliste(stichwortliste), _abgeschlossen(abgeschlossen), _erlaeuterung(erlaeuterung) {}
 
@@ -41,8 +46,12 @@ public:
     void setAbgeschlossen(bool abgeschlossen);
     QString erlaeuterung() const;
     void setErlaeuterung(const QString &erlaeuterung);
-    std::shared_ptr<Studiengang> studiengang() const;
-    void setStudiengang(const std::shared_ptr<Studiengang> &studiengang);
+    Studiengang studiengang() const;
+    void setStudiengang(const Studiengang &studiengang);
+    Nutzer bearbeiter() const;
+    void setBearbeiter(const Nutzer &bearbeiter);
+    Nutzer professor() const;
+    void setProfessor(const Nutzer &professor);
 };
 
 #endif // ARBEIT_H

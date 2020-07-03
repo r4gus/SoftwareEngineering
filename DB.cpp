@@ -137,7 +137,7 @@ DB::add(Nutzer &s)
     if(!query.exec()) {
         // check if object does already exist and retrieve it
         QString query_string = "email = '" + s.email() +"'";
-        std::vector<Studiengang> vec = Studiengang::query(query_string);
+        std::vector<Nutzer> vec = Nutzer::query(query_string);
 
         if(vec.size() > 0) return vec[0].id();
 
@@ -151,26 +151,92 @@ int
 DB::add(SonstigesProjekt &s)
 {
     QSqlQuery query;
-    QString qs;
-    QSqlDatabase db = QSqlDatabase::database(); // retrieve database
+    QSqlDatabase db = QSqlDatabase::database();
+    int studiengang_id, dozent_id, student_id, ret_val;
 
-    if (!db.isValid())  throw InvalidDatabaseError("Invalid Database connection");
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
 
-    qs = "INSERT INTO arbeit (titel, status, erlaeuterung, studiengang, dozentid, studentid) VALUES (" +
-         db.driver()->escapeIdentifier(s.titel(), QSqlDriver::FieldName) + ", " +
-         db.driver()->escapeIdentifier(QString(s.abgeschlossen()), QSqlDriver::FieldName) + ", " +
-         db.driver()->escapeIdentifier(s.erlaeuterung(), QSqlDriver::FieldName) + ", " +
-         db.driver()->escapeIdentifier(QString(s.studiengang()->id()), QSqlDriver::FieldName) + ", " +
-         "0, 0)" +
-         ");";
 
-    log("Query", qs);
-    if( !query.exec(qs) ) {
-        throw DatabaseTransactionError(query.lastError().text());
+    // add dozent to database if id <= -1
+    try {
+        if(s.professor().id() <= -1) {
+            Nutzer p = s.professor();
+            dozent_id = DB::session().add(p);
+        } else {
+            dozent_id = s.professor().id();
+        }
+    } catch(exception &e) {
+        log("error", "in add(ARBEIT): While potentially inserting dozent into database");
+        throw e;
     }
 
-    return query.lastInsertId().toInt();
+    qDebug() << "one";
+
+    // add studiengang to database if id <= -1
+    try {
+        if(s.studiengang().id() <= -1) {
+            Studiengang stud = s.studiengang();
+            studiengang_id = DB::session().add(stud);
+        } else {
+            studiengang_id = s.studiengang().id();
+        }
+    } catch(exception &e) {
+        log("error", "in add(ARBEIT): While potentially inserting studiengang into database");
+        throw e;
+    }
+
+
+    qDebug() << "two";
+
+
+    // add student to database if id <= -1
+    try {
+        if(s.bearbeiter().id() <= -1) {
+            Nutzer b = s.bearbeiter();
+            student_id= DB::session().add(b);
+        } else {
+            student_id = s.bearbeiter().id();
+        }
+    } catch(exception &e) {
+        log("error", "in add(ARBEIT): While potentially inserting student into database");
+        throw e;
+    }
+
+    qDebug() << "three";
+
+
+    query.prepare("INSERT INTO arbeit (titel, status, erlaeuterung, studiengangID, dozentID, studentID) "
+                  "VALUES (:titel, :status, :erl, :studiengang_id, :d_id, :s_id)");
+    query.bindValue(":titel", s.titel());
+    query.bindValue(":status", s.abgeschlossen());
+    query.bindValue(":erl", s.erlaeuterung());
+    query.bindValue(":s_id", student_id);
+    query.bindValue(":studiengang_id", studiengang_id);
+    query.bindValue(":d_id", dozent_id);
+
+    if(!query.exec()) {
+        // check if object does already exist and retrieve it
+        QString query_string = "titel = '" + s.titel() +"' and dozentID = " + s.professor().id() +
+                " and studentID = " + s.bearbeiter().id() + " ";
+        std::vector<SonstigesProjekt> vec = SonstigesProjekt::query(query_string);
+
+        if(vec.size() > 0) ret_val = vec[0].id();
+        else throw DatabaseTransactionError(query.lastError().text());
+    } else {
+        ret_val = query.lastInsertId().toInt();
+
+    }
+
+    qDebug() << "four";
+
+    for(auto e : s.stichwortliste()) {
+        QString str = "INSERT INTO stichworte (arbeitID, stichwort) VALUES (" + QString::number(ret_val) + ", " + e + ");";
+        query.exec(str);
+    }
+
+    return ret_val;
 }
+
 
 /*!
  * \brief DB::initialize Creates all required tables if they do not exist.
@@ -341,23 +407,46 @@ DB::test(QSqlDatabase &db)
     }
 
     // ad nutzer
+    qDebug() << "Add Nutzer ---------------------------";
     Nutzer nutzer1("Roland", "Dietrich", "rd@hs.aa", Nutzer::Role::dozent);
     Nutzer nutzer2("Christian", "Heinlein", "km@hs.aa", Nutzer::Role::dozent);
     Nutzer nutzer3("Detlef", "Küpper", "dk@hs.aa", Nutzer::Role::dozent);
+    Nutzer nutzer4("David", "Sugar", "david.sugar@studmail.htw-aalen.de", Nutzer::Role::student);
     nutzer1.set_password("RD");
     nutzer2.set_password("CH");
     nutzer3.set_password("DK");
+    nutzer4.set_password("DS"); nutzer4.setActive(false);
 
     try {
         DB::session().add(nutzer1);
         DB::session().add(nutzer2);
         DB::session().add(nutzer3);
+        DB::session().add(nutzer4);
     } catch(exception &e) {
         if( query.lastError().isValid() ) {
             qDebug() << "Database error in DB::test: " << query.lastError().text();
             return false;
         }
     }
+
+    // ad arbeit
+    qDebug() << "Add Arbeit ----------------------------";
+    QVector<QString> list1 = {"FAT32", "FAT16", "FAT12"};
+    Studiengang s("IN-IS", "Bachelor");
+    SonstigesProjekt arbeit1("FAT Data Recovery", list1, false, "PBS is your friend, rebuild the cluster chain!");
+    arbeit1.setStudiengang(s);
+    arbeit1.setProfessor(nutzer2);
+    arbeit1.setBearbeiter(nutzer4);
+
+    try {
+        DB::session().add(arbeit1);
+    } catch(exception &e) {
+        if( query.lastError().isValid() ) {
+            qDebug() << "Database error in DB::test: " << query.lastError().text();
+            return false;
+        }
+    }
+
 
     return true;
 }
