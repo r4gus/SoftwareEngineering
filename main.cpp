@@ -7,11 +7,17 @@
 #include <QScrollArea>
 #include <QVector>
 #include <iostream>
+#include <QTranslator>
+
 
 int main(int argc, char *argv[])
 {
+    // Translator
+    QTranslator translator;
+    translator.load("strings_en");
 
     QApplication a(argc, argv);
+    a.installTranslator(&translator);
     MainWindow w;
 
     QVector<QString> v;

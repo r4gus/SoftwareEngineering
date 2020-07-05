@@ -21,16 +21,17 @@ SOURCES += \
     mainwindow.cpp \
     main.cpp \
     nutzer.cpp \
+    searchview.cpp \
     sha512.cpp \
     sonstigesprojekt.cpp \
     studiengang.cpp \
-    test.cpp
 
 HEADERS += \
     DB.h \
     arbeit.h \
     mainwindow.h \
     nutzer.h \
+    searchview.h \
     sha512.h \
     sonstigesprojekt.h \
     studiengang.h
@@ -49,3 +50,5 @@ DISTFILES += \
 
 INCLUDEPATH += C:/boost/boost_1_73_0
 INCLUDEPATH += D:/Programmieren/Cpp/libs/boost_1_73_0
+
+TRANSLATIONS = strings_en.ts
