@@ -96,9 +96,6 @@ private:
     bool _active = true;
 
     const static unsigned int WORK_FACTOR = 12;
-    const QString STUDENT_EMAIL = "studmail.htw-aalen.de";
-    const QString DEFAULT_PASSWORD = "password";
-
 };
 
 QString generate_random_salt();

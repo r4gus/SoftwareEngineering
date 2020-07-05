@@ -6,8 +6,8 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QSqlDatabase>
-#include "studiengang.h"
 #include "sonstigesprojekt.h"
+#include "studiengang.h"
 #include "nutzer.h"
 
 using namespace std;

@@ -40,14 +40,34 @@ void Arbeit::setErlaeuterung(const QString &erlaeuterung)
     _erlaeuterung = erlaeuterung;
 }
 
-std::shared_ptr<Studiengang> Arbeit::studiengang() const
+Studiengang Arbeit::studiengang() const
 {
     return _studiengang;
 }
 
-void Arbeit::setStudiengang(const std::shared_ptr<Studiengang> &studiengang)
+void Arbeit::setStudiengang(const Studiengang &studiengang)
 {
     _studiengang = studiengang;
+}
+
+Nutzer Arbeit::bearbeiter() const
+{
+    return _bearbeiter;
+}
+
+void Arbeit::setBearbeiter(const Nutzer &bearbeiter)
+{
+    _bearbeiter = bearbeiter;
+}
+
+Nutzer Arbeit::professor() const
+{
+    return _professor;
+}
+
+void Arbeit::setProfessor(const Nutzer &professor)
+{
+    _professor = professor;
 }
 
 int Arbeit::id() const

@@ -17,8 +17,6 @@ int main(int argc, char *argv[])
     QVector<QString> v;
     v.push_back("Ein Stichwort");
     Studiengang s = Studiengang("IN-IS", "Bachelor");
-    SonstigesProjekt sons = SonstigesProjekt("Einen Titel", v, false, "ja das ist halt so");
-    sons.setStudiengang(std::shared_ptr<Studiengang>(&s));
     try {
         DB::session().add(s);
     } catch(DatabaseTransactionError &e) {
