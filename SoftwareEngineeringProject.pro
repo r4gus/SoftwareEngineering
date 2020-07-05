@@ -48,3 +48,4 @@ DISTFILES += \
     README.md
 
 INCLUDEPATH += C:/boost/boost_1_73_0
+INCLUDEPATH += D:/Programmieren/Cpp/libs/boost_1_73_0
