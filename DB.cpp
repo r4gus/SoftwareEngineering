@@ -232,7 +232,8 @@ DB::add(SonstigesProjekt &s)
 }
 
 int
-DB::add(Projektarbeit &s) {
+DB::add(Projektarbeit &s)
+{
     QSqlQuery query;
     QSqlDatabase db = QSqlDatabase::database();
     int id = -1;
@@ -258,6 +259,35 @@ DB::add(Projektarbeit &s) {
     return id;
 }
 
+int
+DB::add(Abschlussarbeit &s)
+{
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+    int id = -1;
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+
+    try {
+        SonstigesProjekt p = (SonstigesProjekt) s;
+        id = DB::session().add(p);
+    } catch(exception &e) {
+        throw e;
+    }
+
+    query.prepare("INSERT INTO abschlussarbeit (arbeitID, beginn, ende, firma) VALUES (:id, :beginn, :ende, :firma);");
+    query.bindValue(":id", id);
+    query.bindValue(":beginn", s.begin());
+    query.bindValue(":ende", s.end());
+    query.bindValue(":firma", s.firma());
+
+    if(!query.exec()) {
+        log("error", query.lastError().text());
+        throw DatabaseTransactionError(query.lastError().text());
+    }
+
+    return id;
+}
 
 /*!
  * \brief DB::initialize Creates all required tables if they do not exist.
@@ -500,16 +530,30 @@ DB::test(QSqlDatabase &db)
     sep_1.setBearbeiter(nutzer7);
     sep_1.setSemester(4);
 
+    // Abschlussarbeit
+    QVector<QString> list_ba_1 = {"Softwareentwicklung", "Modellierung"};
+    QDate begin(2020, 9, 1);
+    QDate end(2021, 3, 1);
+    Abschlussarbeit ba_1("Codegenerierung mit Enterprise Architect", list_ba_1, false, "");
+    ba_1.setEnd(end);
+    ba_1.setBegin(begin);
+    ba_1.setStudiengang(s_e_bachelor);
+    ba_1.setProfessor(nutzer1);
+    ba_1.setBearbeiter(nutzer5);
+
     try {
         DB::session().add(arbeit1);
         DB::session().add(e_motion);
         DB::session().add(sep_1);
+        DB::session().add(ba_1);
     } catch(exception &e) {
         if( query.lastError().isValid() ) {
             qDebug() << "Database error in DB::test: " << query.lastError().text();
             return false;
         }
     }
+
+
 
 
     return true;

@@ -13,6 +13,7 @@
 #include "nutzer.h"
 #include "studiengang.h"    // the class to be tested
 #include "sonstigesprojekt.h"
+#include "abschlussarbeit.h"
 #include "sha512.h"
 
 struct GlobalFixture {
@@ -279,7 +280,7 @@ BOOST_AUTO_TEST_SUITE(sonstiges_projekt_suit)
 BOOST_AUTO_TEST_CASE( SonstigesProjekt_query_1 )
 {
     vector<SonstigesProjekt> vec = SonstigesProjekt::query_all();
-    BOOST_CHECK_EQUAL(vec.size(), 3);
+    BOOST_CHECK_EQUAL(vec.size(), 4);
 }
 
 BOOST_AUTO_TEST_CASE( SonstigesProjekt_query_2 )
@@ -323,6 +324,35 @@ BOOST_AUTO_TEST_CASE( Projektarbeit_query_2 )
     BOOST_CHECK(vec[0].stichwortliste()[1] == "Softwarearchitektur");
     BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
     BOOST_CHECK_EQUAL(vec[0].semester(), 4);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+/*#####################################################################
+  ###############      Abschlussarbeit #############################
+  #####################################################################*/
+BOOST_AUTO_TEST_SUITE(abschlussarbeit_suit)
+
+BOOST_AUTO_TEST_CASE( Abschlussarbeit_query_1 )
+{
+    vector<Abschlussarbeit> vec = Abschlussarbeit::query_all();
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+}
+
+BOOST_AUTO_TEST_CASE( Abschlussarbeit_query_2 )
+{
+    vector<Abschlussarbeit> vec = Abschlussarbeit::query("titel = 'Codegenerierung mit Enterprise Architect'");
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+
+    BOOST_CHECK(vec[0].erlaeuterung() == "");
+    BOOST_CHECK(vec[0].titel() == "Codegenerierung mit Enterprise Architect");
+    BOOST_CHECK(vec[0].professor().nname() == "Dietrich");
+    BOOST_CHECK(vec[0].bearbeiter().nname() == "Maier");
+    BOOST_CHECK_EQUAL(vec[0].stichwortliste().size(), 2);
+    BOOST_CHECK(vec[0].stichwortliste()[0] == "Softwareentwicklung");
+    BOOST_CHECK(vec[0].stichwortliste()[1] == "Modellierung");
+    BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
+    BOOST_CHECK(vec[0].begin().toString() == "Tue Sep 1 2020" );
+    BOOST_CHECK(vec[0].end().toString() == "Mon Mar 1 2021");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

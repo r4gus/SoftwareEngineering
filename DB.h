@@ -8,6 +8,7 @@
 #include <QSqlDatabase>
 #include "sonstigesprojekt.h"
 #include "projektarbeit.h"
+#include "abschlussarbeit.h"
 #include "studiengang.h"
 #include "nutzer.h"
 
@@ -46,6 +47,7 @@ public:
     int add(Nutzer &s); //!< throws exception
     int add(SonstigesProjekt &s); //!< throws excetion
     int add(Projektarbeit &s); //!< throws exception
+    int add(Abschlussarbeit &s);
 
     /*!
      * \brief Initializes the database.
