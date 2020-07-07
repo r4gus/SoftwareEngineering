@@ -14,6 +14,9 @@ public:
     SonstigesProjekt(int id, QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         Arbeit(id, titel, stichwortliste, abgeschlossen, erlaeuterung) {}
 
+    SonstigesProjekt(int id, QString titel, bool abgeschlossen, QString erlaeuterung) :
+        Arbeit(id, titel, abgeschlossen, erlaeuterung) {}
+
     SonstigesProjekt(int id, QString titel, QVector<QString> stichwortliste, bool abgeschlossen) :
         Arbeit(id, titel, stichwortliste, abgeschlossen) {}
 

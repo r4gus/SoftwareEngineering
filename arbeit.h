@@ -26,6 +26,9 @@ public:
     Arbeit(QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         _titel(titel), _stichwortliste(stichwortliste), _abgeschlossen(abgeschlossen), _erlaeuterung(erlaeuterung) {}
 
+    Arbeit(int id, QString titel, bool abgeschlossen, QString erlaeuterung) :
+        _id(id), _titel(titel), _abgeschlossen(abgeschlossen), _erlaeuterung(erlaeuterung) {}
+
     Arbeit(int id, QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         _id(id), _titel(titel), _stichwortliste(stichwortliste), _abgeschlossen(abgeschlossen), _erlaeuterung(erlaeuterung) {}
 

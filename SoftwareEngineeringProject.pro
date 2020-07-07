@@ -25,6 +25,7 @@ SOURCES += \
     sha512.cpp \
     sonstigesprojekt.cpp \
     studiengang.cpp \
+    test.cpp \
 
 HEADERS += \
     DB.h \
@@ -48,7 +49,6 @@ DISTFILES += \
     LICENSE.txt \
     README.md
 
-INCLUDEPATH += C:/boost/boost_1_73_0
-INCLUDEPATH += D:/Programmieren/Cpp/libs/boost_1_73_0
+INCLUDEPATH += C:/boost/boost_1_73_0 # replace this path with your own path to boost lib
 
 TRANSLATIONS = strings_en.ts

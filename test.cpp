@@ -12,6 +12,7 @@
 #include "DB.h"
 #include "nutzer.h"
 #include "studiengang.h"    // the class to be tested
+#include "sonstigesprojekt.h"
 #include "sha512.h"
 
 struct GlobalFixture {
@@ -235,7 +236,7 @@ BOOST_AUTO_TEST_CASE( query_all_1 )
 {
     std::vector<Nutzer> vec = Nutzer::query_all();
 
-    BOOST_CHECK_EQUAL(vec.size(), 4);
+    BOOST_CHECK_EQUAL(vec.size(), 16);
 }
 
 BOOST_AUTO_TEST_CASE( query_1 )
@@ -270,7 +271,33 @@ BOOST_AUTO_TEST_CASE( query_2 )
 }
 
 BOOST_AUTO_TEST_SUITE_END() // test suit end
+/*#####################################################################
+  ###############      SonstigesProjekt   #############################
+  #####################################################################*/
+BOOST_AUTO_TEST_SUITE(sonstiges_projekt_suit)
 
+BOOST_AUTO_TEST_CASE( SonstigesProjekt_query_1 )
+{
+    vector<SonstigesProjekt> vec = SonstigesProjekt::query_all();
+    BOOST_CHECK_EQUAL(vec.size(), 2);
+}
+
+BOOST_AUTO_TEST_CASE( SonstigesProjekt_query_2 )
+{
+    vector<SonstigesProjekt> vec = SonstigesProjekt::query("titel = 'E-Motion Motorsteuerung'");
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+
+    BOOST_CHECK(vec[0].erlaeuterung() == "Wahlprojekt IN4, durchgeführt beim E-Motion-Rennteam der Hochschule");
+    BOOST_CHECK(vec[0].titel() == "E-Motion Motorsteuerung");
+    BOOST_CHECK(vec[0].professor().nname() == "Dietrich");
+    BOOST_CHECK(vec[0].bearbeiter().nname() == "Lämpel");
+    BOOST_CHECK_EQUAL(vec[0].stichwortliste().size(), 2);
+    BOOST_CHECK(vec[0].stichwortliste()[0] == "Automotive");
+    BOOST_CHECK(vec[0].stichwortliste()[1] == "E-Mobilität");
+    BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
 /*#####################################################################
   ###############          DB             #############################
   #####################################################################*/

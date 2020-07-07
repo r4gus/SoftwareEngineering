@@ -44,8 +44,23 @@ public:
 
     Nutzer() {}
 
+    /*!
+     * \brief Nutzer Instantiate the Nutzer class
+     * \param vname First name
+     * \param nname Second name
+     * \param email E-Mail
+     * \param role The Role of the user
+     *
+     * If a user is of type Role::student, the account is automatically set inactive
+     * and and the default password is set to "password".
+     */
     Nutzer(QString vname, QString nname, QString email, int role) :
-        _vname(vname), _nname(nname), _email(email), _role(role) {};
+        _vname(vname), _nname(nname), _email(email), _role(role) {
+        if(role == Role::student) {
+            _active = false;
+            set_password("password");
+        }
+    };
 
     void set_password(QString input);
     bool check_password(QString input);

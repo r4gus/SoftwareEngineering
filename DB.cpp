@@ -220,8 +220,12 @@ DB::add(SonstigesProjekt &s)
     }
 
     for(auto e : s.stichwortliste()) {
-        QString str = "INSERT INTO stichworte (arbeitID, stichwort) VALUES (" + QString::number(ret_val) + ", " + e + ");";
+        QString str = "INSERT INTO stichworte (arbeitID, stichwort) VALUES (" + QString::number(ret_val) + ", '" + e + "');";
         query.exec(str);
+
+        if( query.lastError().isValid() ) {
+            qDebug() << "Database error in add(SonstigesProjekt) [stichwortliste]: " << query.lastError().text();
+        }
     }
 
     return ret_val;
@@ -261,7 +265,7 @@ DB::initialize(QSqlDatabase &db)
                 " nutzer (nutzerID) ON DELETE CASCADE);";
 
     QString stichworte = "CREATE TABLE stichworte ("
-            " arbeitID INTEGER PRIMARY KEY,"
+            " arbeitID INTEGER,"
             " stichwort TEXT NOT NULL,"
             " FOREIGN KEY (arbeitID) REFERENCES"
             "    arbeit (arbeitID) ON DELETE CASCADE);";
@@ -402,16 +406,39 @@ DB::test(QSqlDatabase &db)
     Nutzer nutzer2("Christian", "Heinlein", "km@hs.aa", Nutzer::Role::dozent);
     Nutzer nutzer3("Detlef", "Küpper", "dk@hs.aa", Nutzer::Role::dozent);
     Nutzer nutzer4("David", "Sugar", "david.sugar@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer5("Max", "Maier", "max.maier@studmail@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer6("Moritz", "Busch", "moritz.busch@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer7("Frieda", "Bolte", "frieda.bolte@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer8("Paul", "Lämpel", "paul.lämpel@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer9("Franz", "Groß", "franz.groß@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer10("Fritz", "Klein", "fritz.klein@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer11("Hans", "Schmidt", "hans.schmidt@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer12("Heiner", "Müller", "heiner.müller@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer13("Maria", "Kurz", "maria.kurz@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer14("Ulrike", "Lang", "ulrike.lang@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer15("Ulrich", "Frei", "ulrich.frei@studmail.htw-aalen.de", Nutzer::Role::student);
+    Nutzer nutzer16("Martin", "Fromm", "martin.fromm@studmail.htw-aalen.de", Nutzer::Role::student);
     nutzer1.set_password("RD");
     nutzer2.set_password("CH");
     nutzer3.set_password("DK");
-    nutzer4.set_password("DS"); nutzer4.setActive(false);
 
     try {
         DB::session().add(nutzer1);
         DB::session().add(nutzer2);
         DB::session().add(nutzer3);
         DB::session().add(nutzer4);
+        DB::session().add(nutzer5);
+        DB::session().add(nutzer6);
+        DB::session().add(nutzer7);
+        DB::session().add(nutzer8);
+        DB::session().add(nutzer9);
+        DB::session().add(nutzer10);
+        DB::session().add(nutzer11);
+        DB::session().add(nutzer12);
+        DB::session().add(nutzer13);
+        DB::session().add(nutzer14);
+        DB::session().add(nutzer15);
+        DB::session().add(nutzer16);
     } catch(exception &e) {
         if( query.lastError().isValid() ) {
             qDebug() << "Database error in DB::test: " << query.lastError().text();
@@ -428,14 +455,24 @@ DB::test(QSqlDatabase &db)
     arbeit1.setProfessor(nutzer2);
     arbeit1.setBearbeiter(nutzer4);
 
+
+    QVector<QString> list_e_motion = {"Automotive", "E-Mobilität"};
+    Studiengang s_e_motion("IN-SE", "Bachelor");
+    SonstigesProjekt e_motion("E-Motion Motorsteuerung", list_e_motion, false, "Wahlprojekt IN4, durchgeführt beim E-Motion-Rennteam der Hochschule");
+    e_motion.setStudiengang(s_e_motion);
+    e_motion.setProfessor(nutzer1);
+    e_motion.setBearbeiter(nutzer8);
+
     try {
         DB::session().add(arbeit1);
+        DB::session().add(e_motion);
     } catch(exception &e) {
         if( query.lastError().isValid() ) {
             qDebug() << "Database error in DB::test: " << query.lastError().text();
             return false;
         }
     }
+
 
 
     return true;
