@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QSqlDatabase>
 #include "sonstigesprojekt.h"
+#include "projektarbeit.h"
 #include "studiengang.h"
 #include "nutzer.h"
 
@@ -41,9 +42,10 @@ public:
      * If the object does already exist, an exception is thrown. If the value is >= 0
      * the method tries to update the corresponding database entry.
      */
-    int add(Studiengang &s);   //!< insert a Studiengang object into the database
-    int add(Nutzer &s);
-    int add(SonstigesProjekt &s);
+    int add(Studiengang &s);   //!< insert a Studiengang object into the database - throws exception
+    int add(Nutzer &s); //!< throws exception
+    int add(SonstigesProjekt &s); //!< throws excetion
+    int add(Projektarbeit &s); //!< throws exception
 
     /*!
      * \brief Initializes the database.

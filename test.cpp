@@ -279,7 +279,7 @@ BOOST_AUTO_TEST_SUITE(sonstiges_projekt_suit)
 BOOST_AUTO_TEST_CASE( SonstigesProjekt_query_1 )
 {
     vector<SonstigesProjekt> vec = SonstigesProjekt::query_all();
-    BOOST_CHECK_EQUAL(vec.size(), 2);
+    BOOST_CHECK_EQUAL(vec.size(), 3);
 }
 
 BOOST_AUTO_TEST_CASE( SonstigesProjekt_query_2 )
@@ -295,6 +295,34 @@ BOOST_AUTO_TEST_CASE( SonstigesProjekt_query_2 )
     BOOST_CHECK(vec[0].stichwortliste()[0] == "Automotive");
     BOOST_CHECK(vec[0].stichwortliste()[1] == "E-Mobilität");
     BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+/*#####################################################################
+  ###############      Projektarbeit   #############################
+  #####################################################################*/
+BOOST_AUTO_TEST_SUITE(projektarbeit_suit)
+
+BOOST_AUTO_TEST_CASE( Projektarbeit_query_1 )
+{
+    vector<Projektarbeit> vec = Projektarbeit::query_all();
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+}
+
+BOOST_AUTO_TEST_CASE( Projektarbeit_query_2 )
+{
+    vector<Projektarbeit> vec = Projektarbeit::query("titel = 'Schichtenarchitektur mit Qt'");
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+
+    BOOST_CHECK(vec[0].erlaeuterung() == "Beispiel Seminarverwaltung");
+    BOOST_CHECK(vec[0].titel() == "Schichtenarchitektur mit Qt");
+    BOOST_CHECK(vec[0].professor().nname() == "Dietrich");
+    BOOST_CHECK(vec[0].bearbeiter().nname() == "Bolte");
+    BOOST_CHECK_EQUAL(vec[0].stichwortliste().size(), 2);
+    BOOST_CHECK(vec[0].stichwortliste()[0] == "Softwareentwicklung");
+    BOOST_CHECK(vec[0].stichwortliste()[1] == "Softwarearchitektur");
+    BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
+    BOOST_CHECK_EQUAL(vec[0].semester(), 4);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

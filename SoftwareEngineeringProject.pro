@@ -17,10 +17,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     DB.cpp \
-    arbeit.cpp \
     mainwindow.cpp \
     main.cpp \
     nutzer.cpp \
+    projektarbeit.cpp \
     searchview.cpp \
     sha512.cpp \
     sonstigesprojekt.cpp \
@@ -29,9 +29,9 @@ SOURCES += \
 
 HEADERS += \
     DB.h \
-    arbeit.h \
     mainwindow.h \
     nutzer.h \
+    projektarbeit.h \
     searchview.h \
     sha512.h \
     sonstigesprojekt.h \

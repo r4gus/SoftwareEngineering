@@ -231,6 +231,33 @@ DB::add(SonstigesProjekt &s)
     return ret_val;
 }
 
+int
+DB::add(Projektarbeit &s) {
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+    int id = -1;
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+
+    try {
+        SonstigesProjekt p = (SonstigesProjekt) s;
+        id = DB::session().add(p);
+    } catch(exception &e) {
+        throw e;
+    }
+
+    query.prepare("INSERT INTO projektarbeit (arbeitID, semester) VALUES (:id, :semester);");
+    query.bindValue(":id", id);
+    query.bindValue(":semester", s.semester());
+
+    if(!query.exec()) {
+        log("error", query.lastError().text());
+        throw DatabaseTransactionError(query.lastError().text());
+    }
+
+    return id;
+}
+
 
 /*!
  * \brief DB::initialize Creates all required tables if they do not exist.
@@ -448,6 +475,7 @@ DB::test(QSqlDatabase &db)
 
     // ad arbeit
     qDebug() << "Add Arbeit ----------------------------";
+    // SonstigesProjekt
     QVector<QString> list1 = {"FAT32", "FAT16", "FAT12"};
     Studiengang s("IN-IS", "Bachelor");
     SonstigesProjekt arbeit1("FAT Data Recovery", list1, false, "PBS is your friend, rebuild the cluster chain!");
@@ -457,22 +485,31 @@ DB::test(QSqlDatabase &db)
 
 
     QVector<QString> list_e_motion = {"Automotive", "E-Mobilität"};
-    Studiengang s_e_motion("IN-SE", "Bachelor");
+    Studiengang s_e_bachelor("IN-SE", "Bachelor");
     SonstigesProjekt e_motion("E-Motion Motorsteuerung", list_e_motion, false, "Wahlprojekt IN4, durchgeführt beim E-Motion-Rennteam der Hochschule");
-    e_motion.setStudiengang(s_e_motion);
+    e_motion.setStudiengang(s_e_bachelor);
     e_motion.setProfessor(nutzer1);
     e_motion.setBearbeiter(nutzer8);
+
+
+    // Projektarbeit
+    QVector<QString> list_sep_1 = {"Softwareentwicklung", "Softwarearchitektur"};
+    Projektarbeit sep_1("Schichtenarchitektur mit Qt", list_sep_1, false, "Beispiel Seminarverwaltung");
+    sep_1.setStudiengang(s_e_bachelor);
+    sep_1.setProfessor(nutzer1);
+    sep_1.setBearbeiter(nutzer7);
+    sep_1.setSemester(4);
 
     try {
         DB::session().add(arbeit1);
         DB::session().add(e_motion);
+        DB::session().add(sep_1);
     } catch(exception &e) {
         if( query.lastError().isValid() ) {
             qDebug() << "Database error in DB::test: " << query.lastError().text();
             return false;
         }
     }
-
 
 
     return true;

@@ -1,35 +1,44 @@
-#include "sonstigesprojekt.h"
+#include "projektarbeit.h"
+
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <map>
 #include "DB.h"
-#include "nutzer.h"
-#include "studiengang.h"
+
+
+unsigned Projektarbeit::semester() const
+{
+    return _semester;
+}
+
+void Projektarbeit::setSemester(const unsigned &semester)
+{
+    _semester = semester;
+}
 
 /*!
 * \brief query_all returns a vector with all objects from the database.
-* \return A vector of SonstigesProjekt objects
+* \return A vector of Projektarbeit objects
 */
-vector<SonstigesProjekt>
-SonstigesProjekt::query_all()
+vector<Projektarbeit> Projektarbeit::query_all()
 {
     QString query_string = "";
-    return SonstigesProjekt::query(query_string);
+    return Projektarbeit::query(query_string);
 }
 
 /*!
  * \brief query Get a subset of the database entries as objects
  * \param s The condition string
- * \return A vector of SonstigesProjekt objects
+ * \return A vector of Projektarbeit objects
  *
  * The method expects a string of type: "key1 >= 'val1' and key2 = 'val2' or ..."
  *
  * The method acts like query_all() if an empty string is provided.
  */
-vector<SonstigesProjekt>
-SonstigesProjekt::query(QString s)
+vector<Projektarbeit> Projektarbeit::query(QString s)
 {
-    vector<SonstigesProjekt> vec;
+    vector<Projektarbeit> vec;
     QSqlDatabase db = QSqlDatabase::database();
     QSqlQuery arbeit_query;
     QSqlQuery sw_query;
@@ -37,7 +46,7 @@ SonstigesProjekt::query(QString s)
 
     if(!db.isValid()) throw InvalidDatabaseError();
 
-    qs += "SELECT arbeitID, titel, status, erlaeuterung, studiengangID, dozentID, studentID FROM arbeit ";
+    qs += "SELECT arbeitID, titel, status, erlaeuterung, studiengangID, dozentID, studentID, semester FROM arbeit NATURAL JOIN projektarbeit ";
     if(!s.isEmpty()) qs += " WHERE " + s;
     qs += ";";
 
@@ -54,8 +63,10 @@ SonstigesProjekt::query(QString s)
         int studg_id = arbeit_query.value(4).toInt();
         int doz_id = arbeit_query.value(5).toInt();
         int student_id = arbeit_query.value(6).toInt();
+        int semester = arbeit_query.value(7).toInt();
 
-        SonstigesProjekt sons(id, titel, status, erl);
+        Projektarbeit p(id, titel, status, erl);
+        p.setSemester(semester);
 
         QString studiengang_qs = "studiengangID = " + QString::number(studg_id);
         QString dozent_qs = "nutzerID = " + QString::number(doz_id);
@@ -66,15 +77,15 @@ SonstigesProjekt::query(QString s)
         vector<Nutzer> student = Nutzer::query(student_qs);
 
         if(studiengang.size() > 0) {
-            sons.setStudiengang(studiengang[0]);
+            p.setStudiengang(studiengang[0]);
         }
 
         if(dozent.size() > 0) {
-            sons.setProfessor(dozent[0]);
+            p.setProfessor(dozent[0]);
         }
 
         if(student.size() > 0) {
-            sons.setBearbeiter(student[0]);
+            p.setBearbeiter(student[0]);
         }
 
         QString stichwort_qs = "SELECT stichwort FROM stichworte WHERE arbeitID = " + QString::number(id);
@@ -86,90 +97,10 @@ SonstigesProjekt::query(QString s)
         while(sw_query.next()) {
             sw_vec.push_back(sw_query.value(0).toString());
         }
-        sons.setStichwortliste(sw_vec);
+        p.setStichwortliste(sw_vec);
 
-        vec.push_back(sons);
+        vec.push_back(p);
     }
 
     return vec;
-}
-
-int SonstigesProjekt::id() const
-{
-    return _id;
-}
-
-void SonstigesProjekt::setId(int id)
-{
-    _id = id;
-}
-
-QString SonstigesProjekt::titel() const
-{
-    return _titel;
-}
-
-void SonstigesProjekt::setTitel(const QString &titel)
-{
-    _titel = titel;
-}
-
-QVector<QString> SonstigesProjekt::stichwortliste() const
-{
-    return _stichwortliste;
-}
-
-void SonstigesProjekt::setStichwortliste(const QVector<QString> &stichwortliste)
-{
-    _stichwortliste = stichwortliste;
-}
-
-bool SonstigesProjekt::abgeschlossen() const
-{
-    return _abgeschlossen;
-}
-
-void SonstigesProjekt::setAbgeschlossen(bool abgeschlossen)
-{
-    _abgeschlossen = abgeschlossen;
-}
-
-QString SonstigesProjekt::erlaeuterung() const
-{
-    return _erlaeuterung;
-}
-
-void SonstigesProjekt::setErlaeuterung(const QString &erlaeuterung)
-{
-    _erlaeuterung = erlaeuterung;
-}
-
-Studiengang SonstigesProjekt::studiengang() const
-{
-    return _studiengang;
-}
-
-void SonstigesProjekt::setStudiengang(const Studiengang &studiengang)
-{
-    _studiengang = studiengang;
-}
-
-Nutzer SonstigesProjekt::bearbeiter() const
-{
-    return _bearbeiter;
-}
-
-void SonstigesProjekt::setBearbeiter(const Nutzer &bearbeiter)
-{
-    _bearbeiter = bearbeiter;
-}
-
-Nutzer SonstigesProjekt::professor() const
-{
-    return _professor;
-}
-
-void SonstigesProjekt::setProfessor(const Nutzer &professor)
-{
-    _professor = professor;
 }
