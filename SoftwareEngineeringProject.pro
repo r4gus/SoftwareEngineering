@@ -26,7 +26,8 @@ SOURCES += \
     sha512.cpp \
     sonstigesprojekt.cpp \
     studiengang.cpp \
-    test.cpp \
+    ProjectView.cpp\
+    gui_utils.cpp \
 
 HEADERS += \
     DB.h \
@@ -37,7 +38,10 @@ HEADERS += \
     searchview.h \
     sha512.h \
     sonstigesprojekt.h \
-    studiengang.h
+    studiengang.h \
+    ProjectView.h \
+    gui_utils.h \
+
 
 FORMS += \
     mainwindow.ui

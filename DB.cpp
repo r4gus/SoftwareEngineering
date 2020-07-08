@@ -472,8 +472,8 @@ DB::test(QSqlDatabase &db)
 
 
     // add studiengänge
-    QVector<QString> s_names = {"IN-AI", "IN-IS", "IN-MI", "IN-SE", "MIN", "MLD"};
-    QVector<QString> s_types = {"Bachelor", "Master"};
+    QStringList s_names = {"IN-AI", "IN-IS", "IN-MI", "IN-SE", "MIN", "MLD"};
+    QStringList s_types = {"Bachelor", "Master"};
     for(auto &sn : s_names) {
         for(auto &st : s_types) {
             qDebug() << "Insert: " << sn << " : " << st;
@@ -540,7 +540,7 @@ DB::test(QSqlDatabase &db)
     // ad arbeit
     qDebug() << "Add Arbeit ----------------------------";
     // SonstigesProjekt
-    QVector<QString> list1 = {"FAT32", "FAT16", "FAT12"};
+    QStringList list1 = {"FAT32", "FAT16", "FAT12"};
     Studiengang s("IN-IS", "Bachelor");
     SonstigesProjekt arbeit1("FAT Data Recovery", list1, false, "PBS is your friend, rebuild the cluster chain!");
     arbeit1.setStudiengang(s);
@@ -548,7 +548,7 @@ DB::test(QSqlDatabase &db)
     arbeit1.setBearbeiter(nutzer4);
 
 
-    QVector<QString> list_e_motion = {"Automotive", "E-Mobilität"};
+    QStringList list_e_motion = {"Automotive", "E-Mobilität"};
     Studiengang s_e_bachelor("IN-SE", "Bachelor");
     SonstigesProjekt e_motion("E-Motion Motorsteuerung", list_e_motion, false, "Wahlprojekt IN4, durchgeführt beim E-Motion-Rennteam der Hochschule");
     e_motion.setStudiengang(s_e_bachelor);
@@ -557,7 +557,7 @@ DB::test(QSqlDatabase &db)
 
 
     // Projektarbeit
-    QVector<QString> list_sep_1 = {"Softwareentwicklung", "Softwarearchitektur"};
+    QStringList list_sep_1 = {"Softwareentwicklung", "Softwarearchitektur"};
     Projektarbeit sep_1("Schichtenarchitektur mit Qt", list_sep_1, false, "Beispiel Seminarverwaltung");
     sep_1.setStudiengang(s_e_bachelor);
     sep_1.setProfessor(nutzer1);
@@ -565,7 +565,7 @@ DB::test(QSqlDatabase &db)
     sep_1.setSemester(4);
 
     // Abschlussarbeit
-    QVector<QString> list_ba_1 = {"Softwareentwicklung", "Modellierung"};
+    QStringList list_ba_1 = {"Softwareentwicklung", "Modellierung"};
     QDate begin(2020, 9, 1);
     QDate end(2021, 3, 1);
     Abschlussarbeit ba_1("Codegenerierung mit Enterprise Architect", list_ba_1, false, "");

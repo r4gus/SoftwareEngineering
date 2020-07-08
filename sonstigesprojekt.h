@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVector>
 #include <vector>
+#include <QtCore/QStringList>
 
 #include "studiengang.h"
 #include "nutzer.h"
@@ -15,19 +16,19 @@ class SonstigesProjekt
 public:
     SonstigesProjekt() {}
 
-    SonstigesProjekt(QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
+    SonstigesProjekt(QString titel, QStringList stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         _titel(titel), _stichwortliste(stichwortliste), _abgeschlossen(abgeschlossen), _erlaeuterung(erlaeuterung) {}
 
-    SonstigesProjekt(int id, QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
+    SonstigesProjekt(int id, QString titel, QStringList stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         _id(id), _titel(titel), _stichwortliste(stichwortliste), _abgeschlossen(abgeschlossen), _erlaeuterung(erlaeuterung) {}
 
     SonstigesProjekt(int id, QString titel, bool abgeschlossen, QString erlaeuterung) :
         _id(id), _titel(titel),  _abgeschlossen(abgeschlossen), _erlaeuterung(erlaeuterung) {}
 
-    SonstigesProjekt(int id, QString titel, QVector<QString> stichwortliste, bool abgeschlossen) :
+    SonstigesProjekt(int id, QString titel, QStringList stichwortliste, bool abgeschlossen) :
         _id(id), _titel(titel), _stichwortliste(stichwortliste), _abgeschlossen(abgeschlossen) {}
 
-    SonstigesProjekt(QString titel, QVector<QString> stichwortliste, bool abgeschlossen) :
+    SonstigesProjekt(QString titel, QStringList stichwortliste, bool abgeschlossen) :
         _titel(titel), _stichwortliste(stichwortliste), _abgeschlossen(abgeschlossen) {}
 
     static vector<SonstigesProjekt> query_all();
@@ -39,8 +40,8 @@ public:
     QString titel() const;
     void setTitel(const QString &titel);
 
-    QVector<QString> stichwortliste() const;
-    void setStichwortliste(const QVector<QString> &stichwortliste);
+    QStringList stichwortliste() const;
+    void setStichwortliste(const QStringList &stichwortliste);
 
     bool abgeschlossen() const;
     void setAbgeschlossen(bool abgeschlossen);
@@ -60,7 +61,7 @@ public:
 private:
     int _id = -1;
     QString _titel;
-    QVector<QString> _stichwortliste;
+    QStringList _stichwortliste;
     bool _abgeschlossen;
     QString _erlaeuterung;
 

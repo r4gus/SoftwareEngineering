@@ -1,4 +1,5 @@
 #include "searchview.h"
+#include "ProjectView.h"
 
 #include <QFormLayout>
 #include <QTranslator>
@@ -50,7 +51,11 @@ SearchView::SearchView()
 }
 
 void SearchView::search() {
-    containerProjectsList->addWidget(new QLabel("Hello World"));
+    auto projects = SonstigesProjekt::query_all();
+    for (const auto& project : projects) {
+        auto vProject = new ProjectView(project, containerProjectsList, true);
+        containerProjectsList->addLayout(vProject);
+    }
 }
 
 void SearchView::openAddProject() {
