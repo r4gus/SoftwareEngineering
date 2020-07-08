@@ -283,8 +283,13 @@ BOOST_AUTO_TEST_CASE( update_1 )
 
     QString query_string2 = "Vname = 'updatedkuepper'";
     vec = Nutzer::query(query_string2);
-
     BOOST_CHECK(vec[0].vname() == updateString);
+
+    vec[0].setVname("Detlef");
+    DB::session().update(vec[0]);
+    QString query_string3 = "Vname = 'Detlef'";
+    vec = Nutzer::query(query_string3);
+    BOOST_CHECK(vec[0].vname() == "Detlef");
 }
 
 BOOST_AUTO_TEST_SUITE_END() // test suit end
