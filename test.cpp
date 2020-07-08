@@ -452,6 +452,43 @@ BOOST_AUTO_TEST_CASE( Abschlussarbeit_query_2 )
     BOOST_CHECK(vec[0].end().toString() == "Mon Mar 1 2021");
 }
 
+BOOST_AUTO_TEST_CASE( Abschlussarbeit_update_1 )
+{
+    vector<Abschlussarbeit> vec = Abschlussarbeit::query("titel = 'Codegenerierung mit Enterprise Architect'");
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+
+    QStringList upd_stichworte = vec[0].stichwortliste();
+    upd_stichworte.append("WeiteresStichwort");
+    vec[0].setStichwortliste(upd_stichworte);
+
+    QDate old_begindate = vec[0].begin();
+    QDate new_begindate = QDate::currentDate();
+    vec[0].setBegin(new_begindate);
+
+    DB::session().update(vec[0]);
+    vec = Abschlussarbeit::query("titel = 'Codegenerierung mit Enterprise Architect'");
+
+    BOOST_CHECK(vec[0].erlaeuterung() == "");
+    BOOST_CHECK(vec[0].titel() == "Codegenerierung mit Enterprise Architect");
+    BOOST_CHECK(vec[0].professor().nname() == "Dietrich");
+    BOOST_CHECK(vec[0].bearbeiter().nname() == "Maier");
+    BOOST_CHECK_EQUAL(vec[0].stichwortliste().size(), 3);
+    BOOST_CHECK(vec[0].stichwortliste()[0] == "Softwareentwicklung");
+    BOOST_CHECK(vec[0].stichwortliste()[1] == "Modellierung");
+    BOOST_CHECK(vec[0].stichwortliste()[2] == "WeiteresStichwort");
+    BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
+    BOOST_CHECK(vec[0].begin().toString() == new_begindate.toString() );
+    BOOST_CHECK(vec[0].end().toString() == "Mon Mar 1 2021");
+
+    vec[0].setBegin(old_begindate);
+    upd_stichworte.removeLast();
+    vec[0].setStichwortliste(upd_stichworte);
+    DB::session().update(vec[0]);
+    vec = Abschlussarbeit::query("titel = 'Codegenerierung mit Enterprise Architect'");
+
+    BOOST_CHECK(vec[0].begin().toString() == "Tue Sep 1 2020" );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 /*#####################################################################
   ###############          DB             #############################

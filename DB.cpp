@@ -397,6 +397,35 @@ DB::add(Abschlussarbeit &s)
     return id;
 }
 
+int
+DB::update(Abschlussarbeit &s)
+{
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+
+    try {
+        SonstigesProjekt p = (SonstigesProjekt) s;
+        DB::session().update(p);
+    } catch(exception &e) {
+        throw e;
+    }
+
+    query.prepare("UPDATE abschlussarbeit SET beginn = :beginn, ende = :ende, firma = :firma WHERE arbeitID = :id");
+    query.bindValue(":id", s.id());
+    query.bindValue(":beginn", s.begin());
+    query.bindValue(":ende", s.end());
+    query.bindValue(":firma", s.firma());
+
+    if(!query.exec()) {
+        log("error", query.lastError().text());
+        throw DatabaseTransactionError(query.lastError().text());
+    }
+
+    return s.id();
+}
+
 /*!
  * \brief DB::initialize Creates all required tables if they do not exist.
  * \param db The database to operate on
