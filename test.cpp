@@ -271,6 +271,22 @@ BOOST_AUTO_TEST_CASE( query_2 )
     else BOOST_CHECK_EQUAL(vec[1].check_password("CH"), true);
 }
 
+BOOST_AUTO_TEST_CASE( update_1 )
+{
+    std::vector<Nutzer> vec;
+    QString query_string = "email = 'dk@hs.aa'";
+    vec = Nutzer::query(query_string);
+
+    const QString updateString = "updatedkuepper";
+    vec[0].setVname(updateString);
+    DB::session().update(vec[0]);
+
+    QString query_string2 = "Vname = 'updatedkuepper'";
+    vec = Nutzer::query(query_string2);
+
+    BOOST_CHECK(vec[0].vname() == updateString);
+}
+
 BOOST_AUTO_TEST_SUITE_END() // test suit end
 /*#####################################################################
   ###############      SonstigesProjekt   #############################

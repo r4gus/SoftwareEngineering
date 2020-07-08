@@ -148,6 +148,40 @@ DB::add(Nutzer &s)
 }
 
 int
+DB::update(Nutzer &s)
+{
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+
+    query.prepare("UPDATE nutzer SET VName = :vname, NName = :nname, email = :email, "
+                  "password = :password, salt = :salt, workFactor = :workFactor, role = :role, "
+                  "active = :active WHERE nutzerID = :id ");
+    query.bindValue(":vname", s.vname());
+    query.bindValue(":nname", s.nname());
+    query.bindValue(":email", s.email());
+    query.bindValue(":password", s.password_hash());
+    query.bindValue(":salt", s.password_salt());
+    query.bindValue(":workFactor", s.personal_work_factor());
+    query.bindValue(":role", s.role());
+    query.bindValue(":active", s.active());
+    query.bindValue(":id", s.id());
+
+    if(!query.exec()) {
+        // check if object does already exist and retrieve it
+        QString query_string = "email = '" + s.email() +"'";
+        std::vector<Nutzer> vec = Nutzer::query(query_string);
+
+        if(vec.size() > 0) return vec[0].id();
+
+        throw DatabaseTransactionError(query.lastError().text());
+    }
+
+    return s.id();
+}
+
+int
 DB::add(SonstigesProjekt &s)
 {
     QSqlQuery query;
