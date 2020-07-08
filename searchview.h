@@ -28,6 +28,8 @@ private:
     QPushButton* btnSearch;
     QPushButton* btnAddProject;
     QVBoxLayout* containerProjectsList;
+    QPushButton* btnLoginLogout;
+    QPushButton* btnShowAdminView;
     // TODO add all
 
 

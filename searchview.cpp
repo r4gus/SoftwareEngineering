@@ -1,9 +1,11 @@
 #include "searchview.h"
 #include "ProjectView.h"
+#include "ProjectEditView.h"
 
 #include <QFormLayout>
 #include <QTranslator>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QDialog>
 
 SearchView::SearchView()
 {
@@ -38,15 +40,26 @@ SearchView::SearchView()
             containerLeftSide->addWidget(btnSearch);
         }
 
-        auto containerRightSide = new QHBoxLayout();
+        auto containerRightSide = new QVBoxLayout();
         containerRoot->addLayout(containerRightSide);
         {
+            btnAddProject = new QPushButton(tr("Arbeit hinzufügen"));
+            containerRightSide->addWidget(btnAddProject);
+            btnLoginLogout = new QPushButton(tr("Anmelden")); // TODO: get state
+            containerRightSide->addWidget(btnLoginLogout);
+            if (true) { // TODO: only when admin
+                btnShowAdminView = new QPushButton(tr("Admin Fenster"));
+                containerRightSide->addWidget(btnShowAdminView);
+            }
             containerProjectsList = new QVBoxLayout;
             containerRightSide->addLayout(containerProjectsList);
         }
     }
     // SIGNALS
     connect(btnSearch, SIGNAL(clicked()), this, SLOT(search()));
+    connect(btnAddProject, SIGNAL(clicked()), this, SLOT(openAddProject()));
+    connect(btnLoginLogout, SIGNAL(clicked()), this, SLOT(loginLogout()));
+    connect(btnShowAdminView, SIGNAL(clicked()), this, SLOT(openAdminView()));
 
 }
 
@@ -59,7 +72,12 @@ void SearchView::search() {
 }
 
 void SearchView::openAddProject() {
-
+    auto popupAddProject = new QDialog;
+    popupAddProject->setModal(false);
+    {
+        popupAddProject->setLayout(new ProjectEditView);
+    }
+    popupAddProject->show();
 }
 
 void SearchView::loginLogout() {

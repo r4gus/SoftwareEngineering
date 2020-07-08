@@ -28,6 +28,7 @@ SOURCES += \
     studiengang.cpp \
     ProjectView.cpp\
     gui_utils.cpp \
+    ProjectEditView.cpp \
     test.cpp
 
 HEADERS += \
@@ -41,6 +42,7 @@ HEADERS += \
     sonstigesprojekt.h \
     studiengang.h \
     ProjectView.h \
+    ProjectEditView.h \
     gui_utils.h \
 
 
