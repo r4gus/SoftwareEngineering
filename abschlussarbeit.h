@@ -9,19 +9,19 @@ class Abschlussarbeit : public SonstigesProjekt
 public:
     Abschlussarbeit() {}
 
-    Abschlussarbeit(QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
+    Abschlussarbeit(QString titel, QStringList stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         SonstigesProjekt(titel, stichwortliste, abgeschlossen, erlaeuterung) {}
 
-    Abschlussarbeit(int id, QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
+    Abschlussarbeit(int id, QString titel, QStringList stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         SonstigesProjekt(id, titel, stichwortliste, abgeschlossen, erlaeuterung) {}
 
     Abschlussarbeit(int id, QString titel, bool abgeschlossen, QString erlaeuterung) :
         SonstigesProjekt(id, titel, abgeschlossen, erlaeuterung) {}
 
-    Abschlussarbeit(int id, QString titel, QVector<QString> stichwortliste, bool abgeschlossen) :
+    Abschlussarbeit(int id, QString titel, QStringList stichwortliste, bool abgeschlossen) :
         SonstigesProjekt(id, titel, stichwortliste, abgeschlossen) {}
 
-    Abschlussarbeit(QString titel, QVector<QString> stichwortliste, bool abgeschlossen) :
+    Abschlussarbeit(QString titel, QStringList stichwortliste, bool abgeschlossen) :
         SonstigesProjekt(titel, stichwortliste, abgeschlossen) {}
 
     QDate begin() const;

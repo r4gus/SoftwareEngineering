@@ -78,7 +78,7 @@ SonstigesProjekt::query(QString s)
         }
 
         QString stichwort_qs = "SELECT stichwort FROM stichworte WHERE arbeitID = " + QString::number(id);
-        QVector<QString> sw_vec;
+        QStringList sw_vec;
         log("Query", stichwort_qs);
         if( !sw_query.exec(stichwort_qs) ) {
             log("error", sw_query.lastError().text());
@@ -114,12 +114,12 @@ void SonstigesProjekt::setTitel(const QString &titel)
     _titel = titel;
 }
 
-QVector<QString> SonstigesProjekt::stichwortliste() const
+QStringList SonstigesProjekt::stichwortliste() const
 {
     return _stichwortliste;
 }
 
-void SonstigesProjekt::setStichwortliste(const QVector<QString> &stichwortliste)
+void SonstigesProjekt::setStichwortliste(const QStringList &stichwortliste)
 {
     _stichwortliste = stichwortliste;
 }

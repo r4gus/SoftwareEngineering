@@ -89,7 +89,7 @@ vector<Projektarbeit> Projektarbeit::query(QString s)
         }
 
         QString stichwort_qs = "SELECT stichwort FROM stichworte WHERE arbeitID = " + QString::number(id);
-        QVector<QString> sw_vec;
+        QStringList sw_vec;
         log("Query", stichwort_qs);
         if( !sw_query.exec(stichwort_qs) ) {
             log("error", sw_query.lastError().text());

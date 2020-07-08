@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     a.installTranslator(&translator);
     MainWindow w;
 
-    QVector<QString> v;
+    QStringList v;
     v.push_back("Ein Stichwort");
     Studiengang s = Studiengang("IN-IS", "Bachelor");
     try {

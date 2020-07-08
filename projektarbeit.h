@@ -9,19 +9,19 @@ class Projektarbeit : public SonstigesProjekt
 public:
     Projektarbeit() {}
 
-    Projektarbeit(QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
+    Projektarbeit(QString titel, QStringList stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         SonstigesProjekt(titel, stichwortliste, abgeschlossen, erlaeuterung) {}
 
-    Projektarbeit(int id, QString titel, QVector<QString> stichwortliste, bool abgeschlossen, QString erlaeuterung) :
+    Projektarbeit(int id, QString titel, QStringList stichwortliste, bool abgeschlossen, QString erlaeuterung) :
         SonstigesProjekt(id, titel, stichwortliste, abgeschlossen, erlaeuterung) {}
 
     Projektarbeit(int id, QString titel, bool abgeschlossen, QString erlaeuterung) :
         SonstigesProjekt(id, titel, abgeschlossen, erlaeuterung) {}
 
-    Projektarbeit(int id, QString titel, QVector<QString> stichwortliste, bool abgeschlossen) :
+    Projektarbeit(int id, QString titel, QStringList stichwortliste, bool abgeschlossen) :
         SonstigesProjekt(id, titel, stichwortliste, abgeschlossen) {}
 
-    Projektarbeit(QString titel, QVector<QString> stichwortliste, bool abgeschlossen) :
+    Projektarbeit(QString titel, QStringList stichwortliste, bool abgeschlossen) :
         SonstigesProjekt(titel, stichwortliste, abgeschlossen) {}
 
     unsigned semester() const;
