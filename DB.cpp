@@ -265,6 +265,53 @@ DB::add(SonstigesProjekt &s)
     return ret_val;
 }
 
+
+int
+DB::update(SonstigesProjekt &s)
+{
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+    int ret_val;
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+
+    query.prepare("UPDATE arbeit SET titel = :titel, status = :status, erlaeuterung = :erl, "
+                  "studiengangID = :studiengang_id, dozentID = :d_id, studentID = :s_id "
+                  "WHERE arbeitID = :arbeitID");
+    query.bindValue(":titel", s.titel());
+    query.bindValue(":status", s.abgeschlossen());
+    query.bindValue(":erl", s.erlaeuterung());
+    query.bindValue(":studiengang_id", s.studiengang().id());
+    query.bindValue(":d_id", s.professor().id());
+    query.bindValue(":s_id", s.bearbeiter().id());
+    query.bindValue(":arbeitID", s.id());
+
+    if(!query.exec()) {
+        // check if object does already exist and retrieve it
+        QString query_string = "titel = '" + s.titel() +"' and dozentID = " + s.professor().id() +
+                " and studentID = " + s.bearbeiter().id() + " ";
+        std::vector<SonstigesProjekt> vec = SonstigesProjekt::query(query_string);
+
+        if(vec.size() > 0) ret_val = vec[0].id();
+        else throw DatabaseTransactionError(query.lastError().text());
+    }
+
+    query.prepare("DELETE FROM stichworte WHERE arbeitID = :arbeitID");
+    query.bindValue(":arbeitID", s.id());
+    query.exec();
+
+    for(auto e : s.stichwortliste()) {
+        QString str = "INSERT INTO stichworte (arbeitID, stichwort) VALUES (" + QString::number(s.id()) + ", '" + e + "');";
+        query.exec(str);
+
+        if( query.lastError().isValid() ) {
+            qDebug() << "Database error in add(SonstigesProjekt) [stichwortliste]: " << query.lastError().text();
+        }
+    }
+
+    return ret_val;
+}
+
 int
 DB::add(Projektarbeit &s)
 {

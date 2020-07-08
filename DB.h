@@ -50,6 +50,7 @@ public:
     int add(Abschlussarbeit &s);
 
     int update(Nutzer &s); //!< throws exception
+    int update(SonstigesProjekt &s); //!< throws excetion
     /*!
      * \brief Initializes the database.
      *

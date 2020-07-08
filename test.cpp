@@ -319,6 +319,49 @@ BOOST_AUTO_TEST_CASE( SonstigesProjekt_query_2 )
     BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
 }
 
+BOOST_AUTO_TEST_CASE( SonstigesProjekt_update_titel )
+{
+    vector<SonstigesProjekt> vec = SonstigesProjekt::query("titel = 'E-Motion Motorsteuerung'");
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+
+    vec[0].setTitel("E-Motion Update Motorsteuerung");
+    DB::session().update(vec[0]);
+    vec = SonstigesProjekt::query("titel = 'E-Motion Update Motorsteuerung'");
+
+    BOOST_CHECK(vec[0].erlaeuterung() == "Wahlprojekt IN4, durchgeführt beim E-Motion-Rennteam der Hochschule");
+    BOOST_CHECK(vec[0].titel() == "E-Motion Update Motorsteuerung");
+    BOOST_CHECK(vec[0].professor().nname() == "Dietrich");
+    BOOST_CHECK(vec[0].bearbeiter().nname() == "Lämpel");
+    BOOST_CHECK_EQUAL(vec[0].stichwortliste().size(), 2);
+    BOOST_CHECK(vec[0].stichwortliste()[0] == "Automotive");
+    BOOST_CHECK(vec[0].stichwortliste()[1] == "E-Mobilität");
+    BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
+
+    vec[0].setTitel("E-Motion Motorsteuerung");
+    DB::session().update(vec[0]);
+}
+
+BOOST_AUTO_TEST_CASE( SonstigesProjekt_update_stichworte )
+{
+    vector<SonstigesProjekt> vec = SonstigesProjekt::query("titel = 'E-Motion Motorsteuerung'");
+    BOOST_CHECK_EQUAL(vec.size(), 1);
+
+    QStringList list_e_motion = {"Automotive", "E-Mobilität", "TestStichwort"};
+    vec[0].setStichwortliste(list_e_motion);
+    DB::session().update(vec[0]);
+    vec = SonstigesProjekt::query("titel = 'E-Motion Motorsteuerung'");
+
+    BOOST_CHECK(vec[0].erlaeuterung() == "Wahlprojekt IN4, durchgeführt beim E-Motion-Rennteam der Hochschule");
+    BOOST_CHECK(vec[0].titel() == "E-Motion Motorsteuerung");
+    BOOST_CHECK(vec[0].professor().nname() == "Dietrich");
+    BOOST_CHECK(vec[0].bearbeiter().nname() == "Lämpel");
+    BOOST_CHECK_EQUAL(vec[0].stichwortliste().size(), 3);
+    BOOST_CHECK(vec[0].stichwortliste()[0] == "Automotive");
+    BOOST_CHECK(vec[0].stichwortliste()[1] == "E-Mobilität");
+    BOOST_CHECK(vec[0].stichwortliste()[2] == "TestStichwort");
+    BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 /*#####################################################################
   ###############      Projektarbeit   #############################

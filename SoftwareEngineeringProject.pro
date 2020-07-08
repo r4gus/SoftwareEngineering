@@ -28,6 +28,7 @@ SOURCES += \
     studiengang.cpp \
     ProjectView.cpp\
     gui_utils.cpp \
+    test.cpp
 
 HEADERS += \
     DB.h \
