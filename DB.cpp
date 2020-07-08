@@ -271,7 +271,7 @@ DB::update(SonstigesProjekt &s)
 {
     QSqlQuery query;
     QSqlDatabase db = QSqlDatabase::database();
-    int ret_val;
+    int ret_val = s.id();
 
     if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
 
@@ -328,7 +328,7 @@ DB::add(Projektarbeit &s)
         throw e;
     }
 
-    query.prepare("INSERT INTO projektarbeit (arbeitID, semester) VALUES (:id, :semester);");
+    query.prepare("INSERT INTO projektarbeit (arbeitID, semester) VALUES (:id, :semester)");
     query.bindValue(":id", id);
     query.bindValue(":semester", s.semester());
 
@@ -338,6 +338,33 @@ DB::add(Projektarbeit &s)
     }
 
     return id;
+}
+
+int
+DB::update(Projektarbeit &s)
+{
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+
+    try {
+        SonstigesProjekt p = (SonstigesProjekt) s;
+        DB::session().update(p);
+    } catch(exception &e) {
+        throw e;
+    }
+
+    query.prepare("UPDATE projektarbeit SET semester = :semester WHERE arbeitID = :id");
+    query.bindValue(":id", s.id());
+    query.bindValue(":semester", s.semester());
+
+    if(!query.exec()) {
+        log("error", query.lastError().text());
+        throw DatabaseTransactionError(query.lastError().text());
+    }
+
+    return s.id();
 }
 
 int
