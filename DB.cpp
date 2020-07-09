@@ -175,6 +175,23 @@ DB::update(Nutzer &s)
     return s.id();
 }
 
+bool
+DB::remove(Nutzer &s)
+{
+    bool ret = false;
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+    if(s.id() < 0) return ret; // no valid id
+
+    query.prepare("DELETE FROM nutzer WHERE nutzerID = " + QString::number(s.id()));
+
+    if(query.exec()) ret = true;
+
+    return ret;
+}
+
 int
 DB::add(SonstigesProjekt &s)
 {
@@ -300,6 +317,24 @@ DB::update(SonstigesProjekt &s)
     return ret_val;
 }
 
+bool
+DB::remove(SonstigesProjekt &s)
+{
+    bool ret = false;
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+    if(s.id() < 0) return ret; // no valid id
+
+    query.exec("PRAGMA foreign_keys = ON");
+    query.prepare("DELETE FROM arbeit WHERE arbeitID = " + QString::number(s.id()));
+
+    if(query.exec()) ret = true;
+
+    return ret;
+}
+
 int
 DB::add(Projektarbeit &s)
 {
@@ -353,6 +388,13 @@ DB::update(Projektarbeit &s)
     }
 
     return s.id();
+}
+
+bool
+DB::remove(Projektarbeit &s)
+{
+    SonstigesProjekt sons = (SonstigesProjekt) s;
+    return DB::session().remove(sons);
 }
 
 int
@@ -412,6 +454,13 @@ DB::update(Abschlussarbeit &s)
     }
 
     return s.id();
+}
+
+bool
+DB::remove(Abschlussarbeit &s)
+{
+    SonstigesProjekt sons = (SonstigesProjekt) s;
+    return DB::session().remove(sons);
 }
 
 /*!

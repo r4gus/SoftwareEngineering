@@ -54,6 +54,11 @@ public:
     int update(Projektarbeit &s); //!< throws exception
     int update(Abschlussarbeit &s);
 
+    bool remove(Nutzer &s);
+    bool remove(SonstigesProjekt &s);
+    bool remove(Projektarbeit &s);
+    bool remove(Abschlussarbeit &s);
+
     /*!
      * \brief Initializes the database.
      *
