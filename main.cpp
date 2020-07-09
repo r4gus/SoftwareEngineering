@@ -3,11 +3,10 @@
 #include "sonstigesprojekt.h"
 #include "DB.h"
 
-#include <QApplication>
-#include <QScrollArea>
 #include <QVector>
 #include <iostream>
 #include <QTranslator>
+#include <QtWidgets/QApplication>
 
 
 int main(int argc, char *argv[])

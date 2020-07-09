@@ -3,8 +3,6 @@
 //
 #include "gui_utils.h"
 
-#include <QWidget>
-
 void clearLayout(QLayout* layout) {
     while (QLayoutItem* item = layout->takeAt(0))
     {
