@@ -3,7 +3,10 @@
 //
 
 #include <QtWidgets/QFormLayout>
+#include <QtWidgets/qaction.h>
 #include "LoginView.h"
+#include "gui_utils.h"
+#include "ChangePasswordView.h"
 
 
 LoginView::LoginView() {
@@ -35,12 +38,18 @@ LoginView::LoginView() {
     }
 
     // SIGNALS and SLOTS
-    connect(btnLogin, SIGNAL(clicked()), this, SLOT(login(false)));
-    connect(btnLoginChangePassword, SIGNAL(clicked()), this, SLOT(login(true)));
+    connect(btnLogin, SIGNAL(clicked()), this, SLOT(test()));
+    connect(btnLoginChangePassword, &QPushButton::clicked, [this]{login(true); });
     // TODO: btnCancel
 }
 
 
 void LoginView::login(bool changePassword) {
-
+    // TODO: if first login -> changePassword = true
+    if (changePassword) {
+        // close
+        openPopup(new ChangePasswordView);
+    } else {
+        // close
+    }
 }

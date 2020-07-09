@@ -30,6 +30,7 @@ SOURCES += \
     gui_utils.cpp \
     ProjectEditView.cpp \
     LoginView.cpp \
+    ChangePasswordView.cpp \
 
 HEADERS += \
     DB.h \
@@ -45,6 +46,7 @@ HEADERS += \
     ProjectEditView.h \
     gui_utils.h \
     LoginView.h \
+    ChangePasswordView.h \
 
 
 

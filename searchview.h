@@ -1,13 +1,12 @@
 #ifndef SEARCHVIEW_H
 #define SEARCHVIEW_H
 
-#include <QCalendarWidget>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QVBoxLayout>
 
-
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCalendarWidget>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QComboBox>
 
 class SearchView : public QVBoxLayout
 {

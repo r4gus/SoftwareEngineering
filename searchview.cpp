@@ -4,10 +4,10 @@
 #include "gui_utils.h"
 #include "LoginView.h"
 
-#include <QFormLayout>
 #include <QTranslator>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QFormLayout>
 
 SearchView::SearchView()
 {

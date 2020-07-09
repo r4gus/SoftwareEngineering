@@ -25,9 +25,8 @@ private:
 public:
     LoginView();
 
-private Q_SLOTS:
+public Q_SLOTS:
     void login(bool changePassword);
-
 };
 
 
