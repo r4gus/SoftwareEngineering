@@ -1,6 +1,8 @@
 #include "searchview.h"
 #include "ProjectView.h"
 #include "ProjectEditView.h"
+#include "gui_utils.h"
+#include "LoginView.h"
 
 #include <QFormLayout>
 #include <QTranslator>
@@ -72,16 +74,14 @@ void SearchView::search() {
 }
 
 void SearchView::openAddProject() {
-    auto popupAddProject = new QDialog;
-    popupAddProject->setModal(false);
-    {
-        popupAddProject->setLayout(new ProjectEditView);
-    }
-    popupAddProject->show();
+    openPopup(new ProjectEditView);
 }
 
 void SearchView::loginLogout() {
-
+    // TODO: Check if logged in
+    if (true) {
+        openPopup(new LoginView);
+    }
 }
 
 void SearchView::openAdminView() {

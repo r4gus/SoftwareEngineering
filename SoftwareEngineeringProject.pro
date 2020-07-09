@@ -29,7 +29,7 @@ SOURCES += \
     ProjectView.cpp\
     gui_utils.cpp \
     ProjectEditView.cpp \
-    test.cpp
+    LoginView.cpp \
 
 HEADERS += \
     DB.h \
@@ -44,6 +44,8 @@ HEADERS += \
     ProjectView.h \
     ProjectEditView.h \
     gui_utils.h \
+    LoginView.h \
+
 
 
 FORMS += \

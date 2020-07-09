@@ -16,3 +16,13 @@ void clearLayout(QLayout* layout) {
         delete item;
     }
 }
+
+QDialog* openPopup(QLayout* content){
+    auto pDialog = new QDialog;
+    pDialog->setModal(false);
+    {
+        pDialog->setLayout(content);
+    }
+    pDialog->show();
+    return pDialog;
+}

@@ -6,7 +6,10 @@
 #define SOFTWAREENGINEERINGPROJECT_GUI_UTILS_H
 
 #include <QtWidgets/QLayout>
+#include <QtWidgets/QDialog>
 
 void clearLayout(QLayout* layout);
+
+QDialog* openPopup(QLayout* content);
 
 #endif //SOFTWAREENGINEERINGPROJECT_GUI_UTILS_H
