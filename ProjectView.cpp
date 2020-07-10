@@ -4,7 +4,9 @@
 
 #include "ProjectView.h"
 #include "gui_utils.h"
+#include "ProjectEditView.h"
 
+#include <QDebug>
 #include <utility>
 #include <QtWidgets/QLabel>
 
@@ -55,19 +57,23 @@ void ProjectView::build(const SonstigesProjekt& project) {
                 cRight->addWidget(btnEdit);
                 btnRemove = new QPushButton(tr("Remove"));
                 cRight->addWidget(btnRemove);
+                connect(btnEdit, SIGNAL(clicked()), this, SLOT(openEditWindow()));
+                connect(btnRemove, SIGNAL(clicked()), this, SLOT(remove()));
             }
         }
     }
-
-    // Signals and slots
-    connect(btnEdit, SIGNAL(clicked()), this, SLOT(openEditWindow()));
-    connect(btnRemove, SIGNAL(clicked()), this, SLOT(remove()));
 }
 
 void ProjectView::openEditWindow() {
-
+    openPopup(new ProjectEditView(projectId));
 }
 
 void ProjectView::edited(int) {
-
+    // TODO: correct project type
+    auto projects = SonstigesProjekt::query("arbeitID='" + QString::fromStdString(std::to_string(projectId)) + "'");
+    if (projects.size() == 1) {
+        update(projects[0]);
+    } else {
+        qDebug() << "Error: Can't find edited project in DB.";
+    }
 }

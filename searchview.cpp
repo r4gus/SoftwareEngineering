@@ -72,8 +72,10 @@ SearchView::SearchView()
 
 void SearchView::search() {
     auto projects = SonstigesProjekt::query_all();
+    auto user = MainWindow::get().user;
     for (const auto& project : projects) {
-        auto vProject = new ProjectView(project, containerProjectsList, true);
+        bool editable = project.professor().id() == user.id() || user.is_administrator();
+        auto vProject = new ProjectView(project, containerProjectsList, editable);
         containerProjectsList->addLayout(vProject);
     }
 }
