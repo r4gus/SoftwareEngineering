@@ -32,7 +32,6 @@ SOURCES += \
     LoginView.cpp \
     ChangePasswordView.cpp \
     AdminView.cpp \
-    test.cpp \
 
 HEADERS += \
     DB.h \

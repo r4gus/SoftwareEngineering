@@ -3,6 +3,8 @@
 #include "ProjectEditView.h"
 #include "gui_utils.h"
 #include "LoginView.h"
+#include "mainwindow.h"
+#include "AdminView.h"
 
 #include <QTranslator>
 #include <QtWidgets/QLabel>
@@ -45,13 +47,18 @@ SearchView::SearchView()
         auto containerRightSide = new QVBoxLayout();
         containerRoot->addLayout(containerRightSide);
         {
-            btnAddProject = new QPushButton(tr("Arbeit hinzufügen"));
-            containerRightSide->addWidget(btnAddProject);
-            btnLoginLogout = new QPushButton(tr("Anmelden")); // TODO: get state
+            auto user = MainWindow::get().user;
+            if (user.role() & Nutzer::Role::create_arbeit) {
+                btnAddProject = new QPushButton(tr("Arbeit hinzufügen"));
+                containerRightSide->addWidget(btnAddProject);
+                connect(btnAddProject, SIGNAL(clicked()), this, SLOT(openAddProject()));
+            }
+            btnLoginLogout = new QPushButton(user.is_student() ? tr("Anmelden") : tr("Abmelden"));
             containerRightSide->addWidget(btnLoginLogout);
-            if (true) { // TODO: only when admin
+            if (user.is_administrator()) {
                 btnShowAdminView = new QPushButton(tr("Admin Fenster"));
                 containerRightSide->addWidget(btnShowAdminView);
+                connect(btnShowAdminView, SIGNAL(clicked()), this, SLOT(openAdminView()));
             }
             containerProjectsList = new QVBoxLayout;
             containerRightSide->addLayout(containerProjectsList);
@@ -59,9 +66,7 @@ SearchView::SearchView()
     }
     // SIGNALS
     connect(btnSearch, SIGNAL(clicked()), this, SLOT(search()));
-    connect(btnAddProject, SIGNAL(clicked()), this, SLOT(openAddProject()));
     connect(btnLoginLogout, SIGNAL(clicked()), this, SLOT(loginLogout()));
-    connect(btnShowAdminView, SIGNAL(clicked()), this, SLOT(openAdminView()));
 
 }
 
@@ -78,14 +83,18 @@ void SearchView::openAddProject() {
 }
 
 void SearchView::loginLogout() {
-    // TODO: Check if logged in
-    if (true) {
+    if (MainWindow::get().user.is_student()) {
+        // login
         openPopup(new LoginView);
+    } else {
+        // logout
+        MainWindow::get().user = Nutzer::guest();
+        MainWindow::get().showView(new SearchView);
     }
 }
 
 void SearchView::openAdminView() {
-
+    MainWindow::get().showView(new AdminView);
 }
 
 void SearchView::addNewProject(int) {
