@@ -9,6 +9,8 @@
 #include "ChangePasswordView.h"
 #include "nutzer.h"
 #include "DB.h"
+#include "mainwindow.h"
+#include "searchview.h"
 
 
 LoginView::LoginView() {
@@ -52,6 +54,9 @@ void LoginView::login(bool changePassword) {
     Nutzer n1("Roland", "Dietrich", "1", Nutzer::Role::dozent);
     n1.set_password("1");
     DB::session().add(n1);
+    Nutzer n2("Roland", "Dietrich", "2", Nutzer::Role::administrator);
+    n2.set_password("2");
+    DB::session().add(n2);
 
     bool successfulLogin = false;
     auto userName = tfUsername->text();
@@ -61,6 +66,7 @@ void LoginView::login(bool changePassword) {
         auto user = users[0];
         if (user.check_password(password)) {
             successfulLogin = true;
+            MainWindow::get().user = user;
         }
     }
     if (successfulLogin) {
@@ -70,6 +76,11 @@ void LoginView::login(bool changePassword) {
         } else {
             auto parentDialog = (QDialog*) parentWidget();
             parentDialog->close();
+            if (MainWindow::get().user.is_administrator()) {
+                MainWindow::get().showView(new LoginView); // TODO: AdminView
+            } else {
+                MainWindow::get().showView(new SearchView);
+            }
         }
     } else {
         lblErrorMessage->setText(tr("Falsches Passwort oder Benutzername"));

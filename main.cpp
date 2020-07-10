@@ -2,6 +2,7 @@
 #include "studiengang.h"
 #include "sonstigesprojekt.h"
 #include "DB.h"
+#include "searchview.h"
 
 #include <QVector>
 #include <iostream>
@@ -17,7 +18,6 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     a.installTranslator(&translator);
-    MainWindow w;
 
     QStringList v;
     v.push_back("Ein Stichwort");
@@ -33,7 +33,8 @@ int main(int argc, char *argv[])
         std::cout << e << endl;
     }
 
-    w.show();
+    MainWindow::get().show();
+    MainWindow::get().showView(new SearchView);
     return a.exec();
 
 }

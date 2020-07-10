@@ -20,7 +20,7 @@
  * A student user is always inactive and used as data class. dozent and student are
  * active by default.
  *
- * A new password should be set immediately after instantiating this class. Every student instance has a DEFAULT_PASSWORD.
+ * A new password should be set immediately after instantiating this class. Every student get has a DEFAULT_PASSWORD.
  */
 class Nutzer
 {

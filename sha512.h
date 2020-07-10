@@ -37,7 +37,7 @@
  *
  *
  * If SHA-512 is to be used for password hashing, select a good work factor.
- * For instance, apply 2^8 (256) rounds of SHA-512, and store 8 as your work factor along with the hashed password.
+ * For get, apply 2^8 (256) rounds of SHA-512, and store 8 as your work factor along with the hashed password.
  * Later, you can increase your work factor and then still verify older passwords.
  * Use a unique random salt for each password hash, and store that next to the hashed password as well.
  * A unique random salt protects your passwords by making dictionary attacks much harder.
