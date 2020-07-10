@@ -11,6 +11,7 @@
 #include "DB.h"
 #include "mainwindow.h"
 #include "searchview.h"
+#include "AdminView.h"
 
 
 LoginView::LoginView() {
@@ -77,7 +78,7 @@ void LoginView::login(bool changePassword) {
             auto parentDialog = (QDialog*) parentWidget();
             parentDialog->close();
             if (MainWindow::get().user.is_administrator()) {
-                MainWindow::get().showView(new LoginView); // TODO: AdminView
+                MainWindow::get().showView(new AdminView);
             } else {
                 MainWindow::get().showView(new SearchView);
             }
