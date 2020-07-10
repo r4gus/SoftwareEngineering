@@ -88,7 +88,7 @@ public:
     void setActive(bool active);
 
     static std::vector<Nutzer> query_all();
-    static std::vector<Nutzer> query(QString &input);
+    static std::vector<Nutzer> query(const QString &input);
 
     QString password_hash() const;
     void set_password_hash(QString s) {_password_hash = s;}

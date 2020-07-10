@@ -24,3 +24,8 @@ QDialog* openPopup(QLayout* content){
     pDialog->show();
     return pDialog;
 }
+
+void replaceLayout(QBoxLayout* parent, QLayout* child) {
+    clearLayout(parent);
+    parent->addLayout(child);
+}

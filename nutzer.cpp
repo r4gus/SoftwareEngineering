@@ -187,7 +187,7 @@ Nutzer::query_all()
  * The method acts like query_all() if an empty string is provided.
  */
 std::vector<Nutzer>
-Nutzer::query(QString &s)
+Nutzer::query(const QString &s)
 {
     std::vector<Nutzer> vec;
     QSqlDatabase db = QSqlDatabase::database();

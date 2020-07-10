@@ -7,6 +7,8 @@
 #include "LoginView.h"
 #include "gui_utils.h"
 #include "ChangePasswordView.h"
+#include "nutzer.h"
+#include "DB.h"
 
 
 LoginView::LoginView() {
@@ -38,18 +40,38 @@ LoginView::LoginView() {
     }
 
     // SIGNALS and SLOTS
-    connect(btnLogin, SIGNAL(clicked()), this, SLOT(test()));
     connect(btnLoginChangePassword, &QPushButton::clicked, [this]{login(true); });
+    connect(btnLogin, &QPushButton::clicked, [this]{login(false); });
     // TODO: btnCancel
 }
 
 
 void LoginView::login(bool changePassword) {
     // TODO: if first login -> changePassword = true
-    if (changePassword) {
-        // close
-        openPopup(new ChangePasswordView);
+    // TODO: remove debug
+    Nutzer n1("Roland", "Dietrich", "1", Nutzer::Role::dozent);
+    n1.set_password("1");
+    DB::session().add(n1);
+
+    bool successfulLogin = false;
+    auto userName = tfUsername->text();
+    auto password = tfPassword->text();
+    auto users = Nutzer::query("email='" + userName + "'");
+    if (users.size() == 1) {
+        auto user = users[0];
+        if (user.check_password(password)) {
+            successfulLogin = true;
+        }
+    }
+    if (successfulLogin) {
+        if (changePassword) {
+            // Crappy workaround to "replace" login view by new view
+            replaceLayout(this, new ChangePasswordView);
+        } else {
+            auto parentDialog = (QDialog*) parentWidget();
+            parentDialog->close();
+        }
     } else {
-        // close
+        lblErrorMessage->setText(tr("Falsches Passwort oder Benutzername"));
     }
 }
