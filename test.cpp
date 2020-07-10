@@ -292,6 +292,16 @@ BOOST_AUTO_TEST_CASE( update_1 )
     BOOST_CHECK(vec[0].vname() == "Detlef");
 }
 
+BOOST_AUTO_TEST_CASE( nutzer_delet_1 )
+{
+    QString query = "nutzerID = 10";
+    std::vector<Nutzer> nutzer = Nutzer::query(query);
+    std::vector<Nutzer> nutzer2 = Nutzer::query_all();
+    DB::session().remove(nutzer[0]);
+    nutzer = Nutzer::query_all();
+    BOOST_CHECK_EQUAL(nutzer.size(), nutzer2.size() - 1);
+}
+
 BOOST_AUTO_TEST_SUITE_END() // test suit end
 /*#####################################################################
   ###############      SonstigesProjekt   #############################
@@ -366,6 +376,16 @@ BOOST_AUTO_TEST_CASE( SonstigesProjekt_update_stichworte )
     DB::session().update(vec[0]);
 }
 
+BOOST_AUTO_TEST_CASE( arbeit_delet_1 )
+{
+    QString query = "arbeitID = 1";
+    std::vector<SonstigesProjekt> vec1 = SonstigesProjekt::query(query);
+    std::vector<SonstigesProjekt> vec2 = SonstigesProjekt::query_all();
+    DB::session().remove(vec1[0]);
+    vec1 = SonstigesProjekt::query_all();
+    BOOST_CHECK_EQUAL(vec1.size(), vec2.size() - 1);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 /*#####################################################################
   ###############      Projektarbeit   #############################
@@ -421,6 +441,16 @@ BOOST_AUTO_TEST_CASE( Projektarbeit_update_1 )
     stichworte.removeLast();
     vec[0].setStichwortliste(stichworte);
     DB::session().update(vec[0]);
+}
+
+BOOST_AUTO_TEST_CASE( projektarbeit_delet_1 )
+{
+    QString query = "arbeitID = 3";
+    std::vector<Projektarbeit> vec1 = Projektarbeit::query(query);
+    std::vector<Projektarbeit> vec2 = Projektarbeit::query_all();
+    DB::session().remove(vec1[0]);
+    vec1 = Projektarbeit::query_all();
+    BOOST_CHECK_EQUAL(vec1.size(), vec2.size() - 1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -487,6 +517,16 @@ BOOST_AUTO_TEST_CASE( Abschlussarbeit_update_1 )
     vec = Abschlussarbeit::query("titel = 'Codegenerierung mit Enterprise Architect'");
 
     BOOST_CHECK(vec[0].begin().toString() == "Tue Sep 1 2020" );
+}
+
+BOOST_AUTO_TEST_CASE( abschlussarbeit_delet_1 )
+{
+    QString query = "arbeitID = 4";
+    std::vector<Abschlussarbeit> vec1 = Abschlussarbeit::query(query);
+    std::vector<Abschlussarbeit> vec2 = Abschlussarbeit::query_all();
+    DB::session().remove(vec1[0]);
+    vec1 = Abschlussarbeit::query_all();
+    BOOST_CHECK_EQUAL(vec1.size(), vec2.size() - 1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

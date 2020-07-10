@@ -169,16 +169,27 @@ DB::update(Nutzer &s)
     query.bindValue(":id", s.id());
 
     if(!query.exec()) {
-        // check if object does already exist and retrieve it
-        QString query_string = "email = '" + s.email() +"'";
-        std::vector<Nutzer> vec = Nutzer::query(query_string);
-
-        if(vec.size() > 0) return vec[0].id();
-
         throw DatabaseTransactionError(query.lastError().text());
     }
 
     return s.id();
+}
+
+bool
+DB::remove(Nutzer &s)
+{
+    bool ret = false;
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+    if(s.id() < 0) return ret; // no valid id
+
+    query.prepare("DELETE FROM nutzer WHERE nutzerID = " + QString::number(s.id()));
+
+    if(query.exec()) ret = true;
+
+    return ret;
 }
 
 int
@@ -287,13 +298,7 @@ DB::update(SonstigesProjekt &s)
     query.bindValue(":arbeitID", s.id());
 
     if(!query.exec()) {
-        // check if object does already exist and retrieve it
-        QString query_string = "titel = '" + s.titel() +"' and dozentID = " + s.professor().id() +
-                " and studentID = " + s.bearbeiter().id() + " ";
-        std::vector<SonstigesProjekt> vec = SonstigesProjekt::query(query_string);
-
-        if(vec.size() > 0) ret_val = vec[0].id();
-        else throw DatabaseTransactionError(query.lastError().text());
+        throw DatabaseTransactionError(query.lastError().text());
     }
 
     query.prepare("DELETE FROM stichworte WHERE arbeitID = :arbeitID");
@@ -310,6 +315,24 @@ DB::update(SonstigesProjekt &s)
     }
 
     return ret_val;
+}
+
+bool
+DB::remove(SonstigesProjekt &s)
+{
+    bool ret = false;
+    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+    if(s.id() < 0) return ret; // no valid id
+
+    query.exec("PRAGMA foreign_keys = ON");
+    query.prepare("DELETE FROM arbeit WHERE arbeitID = " + QString::number(s.id()));
+
+    if(query.exec()) ret = true;
+
+    return ret;
 }
 
 int
@@ -365,6 +388,13 @@ DB::update(Projektarbeit &s)
     }
 
     return s.id();
+}
+
+bool
+DB::remove(Projektarbeit &s)
+{
+    SonstigesProjekt sons = (SonstigesProjekt) s;
+    return DB::session().remove(sons);
 }
 
 int
@@ -424,6 +454,13 @@ DB::update(Abschlussarbeit &s)
     }
 
     return s.id();
+}
+
+bool
+DB::remove(Abschlussarbeit &s)
+{
+    SonstigesProjekt sons = (SonstigesProjekt) s;
+    return DB::session().remove(sons);
 }
 
 /*!
