@@ -118,12 +118,12 @@ void Nutzer::setEmail(const QString &email)
     _email = email;
 }
 
-int Nutzer::role() const
+Nutzer::Role Nutzer::role() const
 {
     return _role;
 }
 
-void Nutzer::setRole(int role)
+void Nutzer::setRole(Nutzer::Role role)
 {
     _role = role;
 }
@@ -213,7 +213,7 @@ Nutzer::query(const QString &s)
         QString password = query.value(4).toString();
         QString salt = query.value(5).toString();
         int work_factor = query.value(6).toInt();
-        int role = query.value(7).toInt();
+        Role role = static_cast<Role>(query.value(7).toInt());
         bool active = query.value(8).toBool();
 
         Nutzer nutzer(vname, nname, email, role);
@@ -226,6 +226,12 @@ Nutzer::query(const QString &s)
     }
 
     return vec;
+}
+
+Nutzer Nutzer::guest() {
+    auto n = Nutzer();
+    n.setRole(Role::student);
+    return n;
 }
 
 

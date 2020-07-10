@@ -54,13 +54,15 @@ public:
      * If a user is of type Role::student, the account is automatically set inactive
      * and and the default password is set to "password".
      */
-    Nutzer(QString vname, QString nname, QString email, int role) :
+    Nutzer(QString vname, QString nname, QString email, Role role) :
         _vname(vname), _nname(nname), _email(email), _role(role) {
         if(role == Role::student) {
             _active = false;
             set_password("password");
         }
     };
+
+    static Nutzer guest();
 
     void set_password(QString input);
     bool check_password(QString input);
@@ -81,8 +83,8 @@ public:
     QString email() const;
     void setEmail(const QString &email);
 
-    int role() const;
-    void setRole(int role);
+    Role role() const;
+    void setRole(Role role);
 
     bool active() const;
     void setActive(bool active);
@@ -107,7 +109,7 @@ private:
     QString _password_hash;
     QString _password_salt;
     unsigned int _personal_work_factor;
-    int _role;
+    Role _role;
     bool _active = true;
 
     const static unsigned int WORK_FACTOR = 12;

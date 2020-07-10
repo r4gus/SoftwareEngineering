@@ -6,6 +6,7 @@
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
         , ui(new Ui::MainWindow)
+        , user(Nutzer::guest())
 {
     ui->setupUi(this);
     root = new QVBoxLayout;
