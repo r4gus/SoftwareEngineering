@@ -45,7 +45,7 @@ LoginView::LoginView() {
     // SIGNALS and SLOTS
     connect(btnLoginChangePassword, &QPushButton::clicked, [this]{login(true); });
     connect(btnLogin, &QPushButton::clicked, [this]{login(false); });
-    // TODO: btnCancel
+    connect(btnCancel, &QPushButton::clicked, [this]{ emit requestClose(); });
 }
 
 
@@ -71,17 +71,19 @@ void LoginView::login(bool changePassword) {
         }
     }
     if (successfulLogin) {
+        if (MainWindow::get().user.is_administrator()) {
+            MainWindow::get().showView(new AdminView);
+        } else {
+            MainWindow::get().showView(new SearchView);
+        }
+
         if (changePassword) {
             // Crappy workaround to "replace" login view by new view
-            replaceLayout(this, new ChangePasswordView);
+            auto newView = new ChangePasswordView;
+            replaceLayout(this, newView);
+            connect(newView, &ChangePasswordView::requestClose, [this]{ emit requestClose(); });
         } else {
-            auto parentDialog = (QDialog*) parentWidget();
-            parentDialog->close();
-            if (MainWindow::get().user.is_administrator()) {
-                MainWindow::get().showView(new AdminView);
-            } else {
-                MainWindow::get().showView(new SearchView);
-            }
+            emit requestClose();
         }
     } else {
         lblErrorMessage->setText(tr("Falsches Passwort oder Benutzername"));

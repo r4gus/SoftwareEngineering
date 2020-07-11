@@ -42,7 +42,8 @@ void AdminView::openAddNewLecturer() {
     auto parent = new QVBoxLayout;
     auto content = new LecturerEditView;
     parent->addWidget(content);
-    openPopup(parent);
+    auto popup = openPopup(parent);
+    connect(content, &LecturerEditView::requestClose, [popup]{ popup->close(); });
 }
 
 void AdminView::search() {

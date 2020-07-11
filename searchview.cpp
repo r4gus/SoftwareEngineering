@@ -84,13 +84,17 @@ void SearchView::search() {
 }
 
 void SearchView::openAddProject() {
-    openPopup(new ProjectEditView);
+    auto projectView = new ProjectEditView;
+    auto popup = openPopup(projectView);
+    connect(projectView, &ProjectEditView::requestClose, [popup]{ popup->close(); });
 }
 
 void SearchView::loginLogout() {
     if (MainWindow::get().user.is_student()) {
         // login
-        openPopup(new LoginView);
+        auto loginView = new LoginView;
+        auto popup = openPopup(loginView);
+        connect(loginView, &LoginView::requestClose, [popup]{ popup->close(); });
     } else {
         // logout
         MainWindow::get().user = Nutzer::guest();

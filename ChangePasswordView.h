@@ -11,21 +11,26 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
 
-class ChangePasswordView : public QVBoxLayout{
-    Q_OBJECT
+class ChangePasswordView : public QVBoxLayout {
+Q_OBJECT
 
 private:
-    QLineEdit* tfPassword1;
-    QLineEdit* tfPassword2;
-    QPushButton* btnChange;
-    QPushButton* btnCancel;
-    QLabel* lblErrorMessage;
+    QLineEdit *tfPassword1;
+    QLineEdit *tfPassword2;
+    QPushButton *btnChange;
+    QPushButton *btnCancel;
+    QLabel *lblErrorMessage;
 
 public:
     ChangePasswordView();
 
 private Q_SLOTS:
+
     void change();
+
+Q_SIGNALS:
+
+    void requestClose();
 };
 
 

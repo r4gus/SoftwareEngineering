@@ -12,21 +12,26 @@
 #include <QtWidgets/QLabel>
 
 class LoginView : public QVBoxLayout {
-    Q_OBJECT
+Q_OBJECT
 
 private:
-    QLineEdit* tfUsername;
-    QLineEdit* tfPassword;
-    QPushButton* btnLogin;
-    QPushButton* btnLoginChangePassword;
+    QLineEdit *tfUsername;
+    QLineEdit *tfPassword;
+    QPushButton *btnLogin;
+    QPushButton *btnLoginChangePassword;
     QPushButton *btnCancel;
-    QLabel* lblErrorMessage;
+    QLabel *lblErrorMessage;
 
 public:
     LoginView();
 
 public Q_SLOTS:
+
     void login(bool changePassword);
+
+Q_SIGNALS:
+
+    void requestClose();
 };
 
 

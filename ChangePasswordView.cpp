@@ -4,6 +4,8 @@
 
 #include <QtWidgets/QFormLayout>
 #include "ChangePasswordView.h"
+#include "mainwindow.h"
+#include "searchview.h"
 
 
 ChangePasswordView::ChangePasswordView() {
@@ -34,7 +36,7 @@ ChangePasswordView::ChangePasswordView() {
 
     // SIGNALS and SLOTS
     connect(btnChange, SIGNAL(clicked()), this, SLOT(change()));
-    // TODO: btnCancel
+    connect(btnCancel, &QPushButton::clicked, [this]{ emit requestClose(); });
 }
 
 void ChangePasswordView::change() {

@@ -72,7 +72,7 @@ void ProjectEditView::save() {
 }
 
 void ProjectEditView::cancel() {
-
+    emit requestClose();
 }
 
 

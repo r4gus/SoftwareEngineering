@@ -48,7 +48,10 @@ private Q_SLOTS:
     void cancel();
 
 Q_SIGNALS:
+
     void saved(int);
+
+    void requestClose();
 };
 
 
