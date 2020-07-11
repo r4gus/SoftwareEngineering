@@ -25,6 +25,9 @@ LecturerEditView::LecturerEditView(int userID, QWidget *parent) :
         ui->tfEmail->setText(user.email());
         ui->tfPassword->setText("");
         ui->btnSave->setText(tr("Speichern"));
+        passwordHash = user.password_hash();
+        password_salt = user.password_salt();
+        personalWorkFactor = user.personal_work_factor();
     } else {
         qDebug() << "Error: Can't find user with ID in DB: " + str(userID);
     }
@@ -46,14 +49,25 @@ void LecturerEditView::save() {
         if (password.size() != 0) {
             n.set_password(password);
         } else {
-            n.set_password("TODO"); // TODO: Update without changing the password
+            n.setPassword_salt(password_salt);
+            n.set_password_hash(passwordHash);
+            n.setPersonal_work_factor(personalWorkFactor);
         }
         // TODO: handle failure
-        DB::session().update(n);
+        try {
+            DB::session().update(n);
+        } catch (DBException e) {
+            qDebug() << e.err();
+            qDebug() << e.what();
+        }
     } else {
         n.set_password(password);
-        // TODO: handle failure
-        lecturerID = DB::session().add(n);
+        try {
+            lecturerID = DB::session().add(n);
+        } catch (DBException e) {
+            qDebug() << e.err();
+            qDebug() << e.what();
+        }
     }
     emit saved(lecturerID);
     emit requestClose();

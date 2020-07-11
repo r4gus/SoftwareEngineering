@@ -21,6 +21,9 @@ private:
     Ui::LecturerEditView *ui;
     bool isEdit;
     int lecturerID;
+    QString passwordHash;
+    QString password_salt;
+    unsigned int personalWorkFactor;
 
 private slots:
 

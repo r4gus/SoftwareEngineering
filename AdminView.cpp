@@ -27,10 +27,10 @@ AdminView::AdminView() {
         }
         btnToSearch = new QPushButton(tr("Zur Suche"));
         cRoot->addWidget(btnToSearch);
-        cLecturersList = new QVBoxLayout;
         {
             // Scrollable
             auto wScrollAreaContent = new QWidget;
+            cLecturersList = new QVBoxLayout(wScrollAreaContent);
             wScrollAreaContent->setLayout(cLecturersList);
             auto scrollArea = new QScrollArea;
             scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

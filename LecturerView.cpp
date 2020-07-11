@@ -7,6 +7,7 @@
 #include "LecturerView.h"
 #include "gui_utils.h"
 #include "lecturereditview.h"
+#include "DB.h"
 
 LecturerView::LecturerView(const Nutzer &lecturer, QVBoxLayout *parent)
     : parent(parent), lecturerID(lecturer.id()) {
@@ -49,6 +50,9 @@ void LecturerView::build(const Nutzer &lecturer) {
     // STYLE
     setFrameShape(QFrame::Shape::StyledPanel);
     setLineWidth(3);
+
+    setMaximumHeight(100);
+    setMinimumHeight(100);
 }
 
 
@@ -59,7 +63,11 @@ void LecturerView::update(const Nutzer &lecturer) {
 
 
 void LecturerView::remove() {
-
+    auto tmpUser = Nutzer();
+    tmpUser.setId(lecturerID);
+    DB::session().remove(tmpUser);
+    parent->removeWidget(this);
+    deleteLater();
 }
 
 
