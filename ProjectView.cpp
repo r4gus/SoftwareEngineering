@@ -91,11 +91,17 @@ void ProjectView::openEditWindow() {
 }
 
 void ProjectView::edited(int) {
-    // TODO: correct project type
-    auto projects = SonstigesProjekt::query("arbeitID='" + QString::fromStdString(std::to_string(projectId)) + "'");
-    if (projects.size() == 1) {
-        update(projects[0]);
-    } else {
-        qDebug() << "Error: Can't find edited project in DB.";
+    auto query = "arbeitID='" + str(projectId) + "'";
+    if (projectType == OTHER) {
+        auto project = queryOne<SonstigesProjekt>(&SonstigesProjekt::query, query);
+        update(project);
+    }
+    if (projectType == THESIS) {
+        auto project = queryOne<Abschlussarbeit>(&Abschlussarbeit::query, query);
+        update(project);
+    }
+    if (projectType == PROJECT) {
+        auto project = queryOne<Projektarbeit>(&Projektarbeit::query, query);
+        update(project);
     }
 }

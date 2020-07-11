@@ -80,6 +80,7 @@ bool hasPermission(const Nutzer &user) {
     return (currentUser.id() == user.id() && user.id() != -1) || currentUser.is_administrator();
 }
 
+
 void SearchView::search() {
     auto projects = SonstigesProjekt::query_all();
     for (const auto& project : projects) {

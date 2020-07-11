@@ -55,17 +55,12 @@ ProjectEditView::ProjectEditView() {
 
 ProjectEditView::ProjectEditView(int projectId) : ProjectEditView(){
     // TODO: correct project type
-    auto projects = SonstigesProjekt::query("arbeitID = '" + str(projectId) + "'");
-    if (projects.size() == 1) {
-        auto project = projects[0];
-        tfTitle->setText(project.titel());
-        tfAuthorFirstName->setText(project.bearbeiter().vname());
-        tfAuthorLastName->setText(project.bearbeiter().nname());
-        tfTags->setText(project.stichwortliste().join("; "));
-        btnSave->setText(tr("Speichern"));
-    } else {
-        qDebug() << "Error: Can't find project in DB with id: " + str(projectId);
-    }
+    auto project = queryOne<SonstigesProjekt>(SonstigesProjekt::query, "arbeitID = '" + str(projectId) + "'");
+    tfTitle->setText(project.titel());
+    tfAuthorFirstName->setText(project.bearbeiter().vname());
+    tfAuthorLastName->setText(project.bearbeiter().nname());
+    tfTags->setText(project.stichwortliste().join("; "));
+    btnSave->setText(tr("Speichern"));
 }
 
 void ProjectEditView::save() {

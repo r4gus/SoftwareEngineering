@@ -62,13 +62,14 @@ void LoginView::login(bool changePassword) {
     bool successfulLogin = false;
     auto userName = tfUsername->text();
     auto password = tfPassword->text();
-    auto users = Nutzer::query("email='" + userName + "'");
-    if (users.size() == 1) {
-        auto user = users[0];
+    try {
+        auto user = queryOne<Nutzer>(Nutzer::query, "email='" + userName + "'");
         if (user.check_password(password)) {
             successfulLogin = true;
             MainWindow::get().user = user;
         }
+    } catch (DBException &e) {
+        successfulLogin = false;
     }
     if (successfulLogin) {
         if (MainWindow::get().user.is_administrator()) {

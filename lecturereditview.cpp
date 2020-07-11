@@ -17,20 +17,15 @@ LecturerEditView::LecturerEditView(int userID, QWidget *parent) :
         LecturerEditView(parent) {
     isEdit = true;
     lecturerID = userID;
-    auto users = Nutzer::query("nutzerID=" + str(userID));
-    if (users.size() == 1) {
-        auto user = users[0];
-        ui->tfFirstName->setText(user.vname());
-        ui->tfLastName->setText(user.nname());
-        ui->tfEmail->setText(user.email());
-        ui->tfPassword->setText("");
-        ui->btnSave->setText(tr("Speichern"));
-        passwordHash = user.password_hash();
-        password_salt = user.password_salt();
-        personalWorkFactor = user.personal_work_factor();
-    } else {
-        qDebug() << "Error: Can't find user with ID in DB: " + str(userID);
-    }
+    auto user = queryOne<Nutzer>(Nutzer::query, "nutzerID=" + str(userID));
+    ui->tfFirstName->setText(user.vname());
+    ui->tfLastName->setText(user.nname());
+    ui->tfEmail->setText(user.email());
+    ui->tfPassword->setText("");
+    ui->btnSave->setText(tr("Speichern"));
+    passwordHash = user.password_hash();
+    password_salt = user.password_salt();
+    personalWorkFactor = user.personal_work_factor();
 }
 
 LecturerEditView::~LecturerEditView() {

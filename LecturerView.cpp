@@ -80,11 +80,6 @@ void LecturerView::openEditWindow() {
 }
 
 void LecturerView::edited(int) {
-    auto users = Nutzer::query("nutzerID=" + str(lecturerID));
-    if (users.size() == 1) {
-        auto user = users[0];
-        update(user);
-    } else {
-        qDebug() << "Error: Can't find user with ID in DB: " + str(lecturerID);
-    }
+    auto user = queryOne<Nutzer>(Nutzer::query, "nutzerID=" + str(lecturerID));
+    update(user);
 }

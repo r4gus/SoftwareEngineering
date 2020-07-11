@@ -2,8 +2,10 @@
 // Created by Julian on 08.07.2020.
 //
 #include "gui_utils.h"
+#include "DB.h"
 
 #include <QtWidgets/QPushButton>
+#include <QDebug>
 
 void clearLayout(QLayout* layout) {
     while (QLayoutItem* item = layout->takeAt(0))
@@ -55,4 +57,3 @@ QVBoxLayout* buildScrollContainer(QLayout* parent) {
     parent->addWidget(scrollArea);
     return cContent;
 }
-

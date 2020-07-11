@@ -62,12 +62,7 @@ void AdminView::toSearchView() {
 }
 
 void AdminView::addNewLecturer(int id) {
-    auto users = Nutzer::query("nutzerID=" + str(id));
-    if (users.size() == 1) {
-        auto user = users[0];
-        auto lecturerView = new LecturerView(user, cLecturersList);
-        cLecturersList->addWidget(lecturerView);
-    } else {
-        qDebug() << "Error: Can't find user in DB with id: " + str(id);
-    }
+    auto user = queryOne<Nutzer>(Nutzer::query, "nutzerID=" + str(id));
+    auto lecturerView = new LecturerView(user, cLecturersList);
+    cLecturersList->addWidget(lecturerView);
 }
