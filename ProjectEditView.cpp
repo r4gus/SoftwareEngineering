@@ -6,6 +6,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QDebug>
 #include "ProjectEditView.h"
+#include "gui_utils.h"
 
 ProjectEditView::ProjectEditView() {
 
@@ -53,9 +54,8 @@ ProjectEditView::ProjectEditView() {
 }
 
 ProjectEditView::ProjectEditView(int projectId) : ProjectEditView(){
-    auto id = QString::fromStdString(std::to_string(projectId));
     // TODO: correct project type
-    auto projects = SonstigesProjekt::query("arbeitID = '" + id + "'");
+    auto projects = SonstigesProjekt::query("arbeitID = '" + str(projectId) + "'");
     if (projects.size() == 1) {
         auto project = projects[0];
         tfTitle->setText(project.titel());
@@ -64,7 +64,7 @@ ProjectEditView::ProjectEditView(int projectId) : ProjectEditView(){
         tfTags->setText(project.stichwortliste().join("; "));
         btnSave->setText(tr("Speichern"));
     } else {
-        qDebug() << "Error: Can't find project in DB with id: " + id;
+        qDebug() << "Error: Can't find project in DB with id: " + str(projectId);
     }
 }
 

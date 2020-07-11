@@ -2,6 +2,7 @@
 // Created by Julian on 10.07.2020.
 //
 #include <QDebug>
+#include <QtWidgets/QScrollArea>
 
 #include "AdminView.h"
 #include "mainwindow.h"
@@ -27,7 +28,17 @@ AdminView::AdminView() {
         btnToSearch = new QPushButton(tr("Zur Suche"));
         cRoot->addWidget(btnToSearch);
         cLecturersList = new QVBoxLayout;
-        cRoot->addLayout(cLecturersList);
+        {
+            // Scrollable
+            auto wScrollAreaContent = new QWidget;
+            wScrollAreaContent->setLayout(cLecturersList);
+            auto scrollArea = new QScrollArea;
+            scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+            scrollArea->setWidget(wScrollAreaContent);
+            scrollArea->setWidgetResizable(true);
+            cRoot->addWidget(scrollArea);
+        }
     }
 
     // SIGNALS and SLOTS
@@ -44,13 +55,14 @@ void AdminView::openAddNewLecturer() {
     parent->addWidget(content);
     auto popup = openPopup(parent);
     connect(content, &LecturerEditView::requestClose, [popup]{ popup->close(); });
+    connect(content, &LecturerEditView::saved, this, &AdminView::addNewLecturer);
 }
 
 void AdminView::search() {
     auto users = Nutzer::query("role=" + str(Nutzer::Role::dozent));
     for (const auto user : users) {
         auto lecturerView = new LecturerView(user, cLecturersList);
-        cLecturersList->addLayout(lecturerView);
+        cLecturersList->addWidget(lecturerView);
     }
 }
 
@@ -58,6 +70,13 @@ void AdminView::toSearchView() {
     MainWindow::get().showView(new SearchView);
 }
 
-void AdminView::addNewLecturer(int) {
-
+void AdminView::addNewLecturer(int id) {
+    auto users = Nutzer::query("nutzerID=" + str(id));
+    if (users.size() == 1) {
+        auto user = users[0];
+        auto lecturerView = new LecturerView(user, cLecturersList);
+        cLecturersList->addWidget(lecturerView);
+    } else {
+        qDebug() << "Error: Can't find user in DB with id: " + str(id);
+    }
 }

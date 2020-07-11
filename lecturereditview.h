@@ -13,11 +13,14 @@ Q_OBJECT
 
 public:
     explicit LecturerEditView(QWidget *parent = nullptr);
+    LecturerEditView(int userID, QWidget *parent = nullptr);
 
     ~LecturerEditView() override;
 
 private:
     Ui::LecturerEditView *ui;
+    bool isEdit;
+    int lecturerID;
 
 private slots:
 
@@ -29,7 +32,7 @@ signals:
 
     void requestClose();
 
-    void saved();
+    void saved(int);
 };
 
 #endif // LECTUREREDITVIEW_H

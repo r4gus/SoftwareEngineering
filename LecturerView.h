@@ -7,10 +7,11 @@
 
 
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QPushButton>
 #include "nutzer.h"
 
-class LecturerView : public QVBoxLayout {
+class LecturerView : public QFrame {
 Q_OBJECT
 
 public:
@@ -20,7 +21,12 @@ private:
     QPushButton *btnRemove;
     QPushButton *btnEdit;
     QVBoxLayout *parent;
+    QHBoxLayout *cRoot;
     int lecturerID;
+
+    void build(const Nutzer &);
+
+    void update(const Nutzer &);
 
 private Q_SLOTS:
 
