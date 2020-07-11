@@ -1,10 +1,13 @@
 //
 // Created by Julian on 10.07.2020.
 //
+#include <QDebug>
 
 #include "AdminView.h"
 #include "mainwindow.h"
 #include "searchview.h"
+#include "gui_utils.h"
+#include "lecturereditview.h"
 
 AdminView::AdminView() {
     auto cRoot = new QVBoxLayout;
@@ -36,7 +39,10 @@ AdminView::AdminView() {
 }
 
 void AdminView::openAddNewLecturer() {
-
+    auto parent = new QVBoxLayout;
+    auto content = new LecturerEditView;
+    parent->addWidget(content);
+    openPopup(parent);
 }
 
 void AdminView::search() {

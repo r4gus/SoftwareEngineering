@@ -5,6 +5,7 @@
 #include "LoginView.h"
 #include "mainwindow.h"
 #include "AdminView.h"
+#include "lecturereditview.h"
 
 #include <QTranslator>
 #include <QtWidgets/QLabel>
@@ -71,6 +72,8 @@ SearchView::SearchView()
 }
 
 void SearchView::search() {
+    containerProjectsList->addWidget(new LecturerEditView);
+
     auto projects = SonstigesProjekt::query_all();
     auto user = MainWindow::get().user;
     for (const auto& project : projects) {

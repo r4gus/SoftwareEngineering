@@ -3,6 +3,8 @@
 //
 #include "gui_utils.h"
 
+#include <QtWidgets/QPushButton>
+
 void clearLayout(QLayout* layout) {
     while (QLayoutItem* item = layout->takeAt(0))
     {
@@ -24,6 +26,13 @@ QDialog* openPopup(QLayout* content){
     pDialog->show();
     return pDialog;
 }
+
+QDialog* openPopup(QWidget* content){
+    auto layout = new QVBoxLayout;
+    layout->addWidget(content);
+    return openPopup(layout);
+}
+
 
 void replaceLayout(QBoxLayout* parent, QLayout* child) {
     clearLayout(parent);

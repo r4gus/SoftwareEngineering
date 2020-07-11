@@ -12,6 +12,8 @@ void clearLayout(QLayout* layout);
 
 QDialog* openPopup(QLayout* content);
 
+//QDialog* openPopup(QWidget* content);
+
 void replaceLayout(QBoxLayout* parent, QLayout* child);
 
 #endif //SOFTWAREENGINEERINGPROJECT_GUI_UTILS_H

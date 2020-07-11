@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     DB.cpp \
     abschlussarbeit.cpp \
+    lecturereditview.cpp \
     mainwindow.cpp \
     main.cpp \
     nutzer.cpp \
@@ -32,10 +33,12 @@ SOURCES += \
     LoginView.cpp \
     ChangePasswordView.cpp \
     AdminView.cpp \
+    LecturerView.cpp \
 
 HEADERS += \
     DB.h \
     abschlussarbeit.h \
+    lecturereditview.h \
     mainwindow.h \
     nutzer.h \
     projektarbeit.h \
@@ -49,10 +52,12 @@ HEADERS += \
     LoginView.h \
     ChangePasswordView.h \
     AdminView.h \
+    LecturerView.h \
 
 
 
 FORMS += \
+    lecturereditview.ui \
     mainwindow.ui \
 
 # Default rules for deployment.
