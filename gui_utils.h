@@ -16,4 +16,6 @@ QDialog* openPopup(QLayout* content);
 
 void replaceLayout(QBoxLayout* parent, QLayout* child);
 
+QString str(int i);
+
 #endif //SOFTWAREENGINEERINGPROJECT_GUI_UTILS_H

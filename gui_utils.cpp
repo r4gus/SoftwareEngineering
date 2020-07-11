@@ -38,3 +38,7 @@ void replaceLayout(QBoxLayout* parent, QLayout* child) {
     clearLayout(parent);
     parent->addLayout(child);
 }
+
+QString str(int i) {
+    return QString::fromStdString(std::to_string(i));
+}

@@ -8,6 +8,7 @@
 #include "searchview.h"
 #include "gui_utils.h"
 #include "lecturereditview.h"
+#include "LecturerView.h"
 
 AdminView::AdminView() {
     auto cRoot = new QVBoxLayout;
@@ -27,15 +28,14 @@ AdminView::AdminView() {
         cRoot->addWidget(btnToSearch);
         cLecturersList = new QVBoxLayout;
         cRoot->addLayout(cLecturersList);
-        {
-            // TODO: get lecturers and show
-        }
     }
 
     // SIGNALS and SLOTS
     connect(btnToSearch, &QPushButton::clicked, [this] { toSearchView(); });
     connect(btnSearch, &QPushButton::clicked, [this] { search(); });
     connect(btnAdd, &QPushButton::clicked, [this] { openAddNewLecturer(); });
+
+    search();
 }
 
 void AdminView::openAddNewLecturer() {
@@ -47,6 +47,11 @@ void AdminView::openAddNewLecturer() {
 }
 
 void AdminView::search() {
+    auto users = Nutzer::query("role=" + str(Nutzer::Role::dozent));
+    for (const auto user : users) {
+        auto lecturerView = new LecturerView(user, cLecturersList);
+        cLecturersList->addLayout(lecturerView);
+    }
 }
 
 void AdminView::toSearchView() {
