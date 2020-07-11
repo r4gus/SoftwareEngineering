@@ -42,3 +42,17 @@ void replaceLayout(QBoxLayout* parent, QLayout* child) {
 QString str(int i) {
     return QString::fromStdString(std::to_string(i));
 }
+
+QVBoxLayout* buildScrollContainer(QLayout* parent) {
+    auto wScrollAreaContent = new QWidget;
+    auto cContent = new QVBoxLayout(wScrollAreaContent);
+    wScrollAreaContent->setLayout(cContent);
+    auto scrollArea = new QScrollArea;
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea->setWidget(wScrollAreaContent);
+    scrollArea->setWidgetResizable(true);
+    parent->addWidget(scrollArea);
+    return cContent;
+}
+

@@ -101,6 +101,8 @@ public:
     unsigned int personal_work_factor() const;
     void setPersonal_work_factor(unsigned int personal_work_factor);
 
+    QString fullName();
+
 private:
     int _id = -1;
     QString _vname;

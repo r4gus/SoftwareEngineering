@@ -234,5 +234,9 @@ Nutzer Nutzer::guest() {
     return n;
 }
 
+QString Nutzer::fullName() {
+    return vname() + " " + nname();
+}
+
 
 

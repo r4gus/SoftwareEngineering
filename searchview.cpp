@@ -8,6 +8,8 @@
 #include "lecturereditview.h"
 
 #include <QTranslator>
+#include <QtConcurrent/QtConcurrent>
+#include <QDebug>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFormLayout>
@@ -61,25 +63,38 @@ SearchView::SearchView()
                 containerRightSide->addWidget(btnShowAdminView);
                 connect(btnShowAdminView, SIGNAL(clicked()), this, SLOT(openAdminView()));
             }
-            containerProjectsList = new QVBoxLayout;
-            containerRightSide->addLayout(containerProjectsList);
+            containerProjectsList = buildScrollContainer(containerRightSide);
         }
     }
     // SIGNALS
     connect(btnSearch, SIGNAL(clicked()), this, SLOT(search()));
     connect(btnLoginLogout, SIGNAL(clicked()), this, SLOT(loginLogout()));
 
+    // load default projects
+    //    QtConcurrent::run([this]{ search(); }); use this when DB can run on this thread
+    search();
+}
+
+bool hasPermission(const Nutzer &user) {
+    auto currentUser = MainWindow::get().user;
+    return (currentUser.id() == user.id() && user.id() != -1) || currentUser.is_administrator();
 }
 
 void SearchView::search() {
-    containerProjectsList->addWidget(new LecturerEditView);
-
     auto projects = SonstigesProjekt::query_all();
-    auto user = MainWindow::get().user;
     for (const auto& project : projects) {
-        bool editable = project.professor().id() == user.id() || user.is_administrator();
-        auto vProject = new ProjectView(project, containerProjectsList, editable);
-        containerProjectsList->addLayout(vProject);
+        auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
+        containerProjectsList->addWidget(vProject);
+    }
+    auto projectsThesis = Abschlussarbeit::query_all();
+    for (const auto& project : projectsThesis) {
+        auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
+        containerProjectsList->addWidget(vProject);
+    }
+    auto projectsProject = Projektarbeit::query_all();
+    for (const auto& project : projectsProject) {
+        auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
+        containerProjectsList->addWidget(vProject);
     }
 }
 

@@ -2,6 +2,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include "sstream"
+#include <thread>
 #include "DB.h"
 #include "nutzer.h"
 #include "studiengang.h"
@@ -30,6 +32,7 @@ vector<SonstigesProjekt>
 SonstigesProjekt::query(QString s)
 {
     vector<SonstigesProjekt> vec;
+
     QSqlDatabase db = QSqlDatabase::database();
     QSqlQuery arbeit_query;
     QSqlQuery sw_query;

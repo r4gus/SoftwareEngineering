@@ -7,6 +7,7 @@
 
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QScrollArea>
 
 void clearLayout(QLayout* layout);
 
@@ -17,5 +18,7 @@ QDialog* openPopup(QWidget* content);
 void replaceLayout(QBoxLayout* parent, QLayout* child);
 
 QString str(int i);
+
+QVBoxLayout* buildScrollContainer(QLayout* parent);
 
 #endif //SOFTWAREENGINEERINGPROJECT_GUI_UTILS_H
