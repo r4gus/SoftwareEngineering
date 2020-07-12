@@ -17,8 +17,8 @@ ProjectEditView::ProjectEditView()
     auto root = new QVBoxLayout;
     addLayout(root);
     {
-        auto lblTitle = new QLabel(tr("Projekt hinzufügen")); // TODO: Change when edit
-        root->addWidget(lblTitle);
+        lblViewTitle = new QLabel(tr("Projekt hinzufügen"));
+        root->addWidget(lblViewTitle);
         auto cFields = new QFormLayout;
         root->addLayout(cFields);
         {
@@ -109,8 +109,10 @@ ProjectEditView::ProjectEditView(int projectId, ProjectType projectType) : Proje
     this->isEdit = true;
     originalProjectType = projectType;
 
+    lblViewTitle->setText(tr("Projekt bearbeiten"));
+
     SonstigesProjekt projectCommon;
-    auto query =  "arbeitID = '" + str(projectId) + "'";
+    auto query =  "arbeit.arbeitID = '" + str(projectId) + "'";
     if (projectType == OTHER) {
         auto project = queryOne<SonstigesProjekt>(SonstigesProjekt::query, query);
         projectCommon = static_cast<SonstigesProjekt>(project);

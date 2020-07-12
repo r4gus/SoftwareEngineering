@@ -22,6 +22,7 @@ class ProjectEditView : public QVBoxLayout{
 
 private:
     static const bool HIDE_FIELDS = false; // Non editable fields are hidden instead of only disabled
+    QLabel* lblViewTitle;
     QLineEdit* tfTitle;
     QLineEdit* tfAuthorFirstName;
     QLineEdit* tfAuthorLastName;
