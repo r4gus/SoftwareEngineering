@@ -13,14 +13,14 @@
 #include "abschlussarbeit.h"
 #include "projektarbeit.h"
 
+enum ProjectType {
+    OTHER, PROJECT, THESIS
+};
+
 class ProjectView : public QFrame {
     Q_OBJECT
 
 public:
-    enum ProjectType {
-        OTHER, PROJECT, THESIS
-    };
-
     ProjectView(const SonstigesProjekt &project, QVBoxLayout *parent, bool editable, ProjectType projectType);
     ProjectView(const SonstigesProjekt& project, QVBoxLayout* parent, bool editable);
     ProjectView(const Abschlussarbeit& project, QVBoxLayout* parent, bool editable);

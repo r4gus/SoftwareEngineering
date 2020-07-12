@@ -87,7 +87,9 @@ void ProjectView::build(const SonstigesProjekt &project) {
 }
 
 void ProjectView::openEditWindow() {
-    openPopup(new ProjectEditView(projectId));
+    auto view = new ProjectEditView(projectId, projectType);
+    auto popup = openPopup(view);
+    connect(view, &ProjectEditView::requestClose, [popup]{ popup->close(); });
 }
 
 void ProjectView::edited(int) {

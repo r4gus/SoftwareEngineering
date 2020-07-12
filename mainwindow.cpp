@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
         , ui(new Ui::MainWindow)
         , user(Nutzer::guest())
 {
+    // TODO: Remove only debug
+    user.setRole(Nutzer::Role::administrator);
     ui->setupUi(this);
     root = new QVBoxLayout;
     ui->centralwidget->setLayout(root);
