@@ -150,7 +150,7 @@ void SearchView::openAdminView() {
 
 void SearchView::addNewProject(int id, ProjectType projectType) {
     clearLayout(containerProjectsList);
-    auto query = "arbeitID='" + str(id) + "'";
+    auto query = "arbeit.arbeitID='" + str(id) + "'";
     if (projectType == PROJECT) {
         auto project = queryOne<Projektarbeit>(Projektarbeit::query, query);
         containerProjectsList->addWidget(

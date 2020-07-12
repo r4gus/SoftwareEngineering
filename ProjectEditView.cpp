@@ -146,6 +146,7 @@ ProjectEditView::ProjectEditView(int projectId, ProjectType projectType) : Proje
 
 void ProjectEditView::save() {
     // TODO: proper update
+    // TODO: FIX: nutzer are not updated/changed -> When the name of the user is updated it's not updated in the DB and GUI
     // Reset state
     lblErrorMessage->setText("");
 

@@ -90,12 +90,13 @@ void ProjectView::openEditWindow() {
     auto view = new ProjectEditView(projectId, projectType);
     auto popup = openPopup(view);
     connect(view, &ProjectEditView::requestClose, [popup]{ popup->close(); });
+    connect(view, &ProjectEditView::saved, this, &ProjectView::edited);
 }
 
 void ProjectView::edited(int newID, ProjectType newType) {
     projectType = newType;
     projectId = newID;
-    auto query = "arbeitID='" + str(projectId) + "'";
+    auto query = "arbeit.arbeitID='" + str(projectId) + "'";
     if (projectType == OTHER) {
         auto project = queryOne<SonstigesProjekt>(&SonstigesProjekt::query, query);
         update(project);
