@@ -18,10 +18,9 @@ public:
 
 private:
     // GUI
-    QLineEdit* tfSearchTitle;
+    QLineEdit* tfSearchKeyword;
     QLineEdit* tfSearchAuthor;
     QLineEdit* tfSearchLecturer;
-    QLineEdit* tfSearchTags;
     QCalendarWidget* calendarSearchTimeFrom;
     QCalendarWidget* calendarSearchTimeTo;
     QComboBox* dropdownSearchType;

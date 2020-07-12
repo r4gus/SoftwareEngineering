@@ -50,4 +50,15 @@ T queryOne(std::function<std::vector<T>(QString)> func, const QString &query) {
     }
 }
 
+class QueryBuilder {
+
+public:
+    void add(const QString &key, const QString &value);
+    void add(const QString &key, int value);
+    QString build();
+private:
+    QString query = "";
+    void addAnd(const QString &condition);
+};
+
 #endif //SOFTWAREENGINEERINGPROJECT_GUI_UTILS_H

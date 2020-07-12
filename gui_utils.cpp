@@ -42,7 +42,7 @@ void replaceLayout(QBoxLayout* parent, QLayout* child) {
 }
 
 QString str(int i) {
-    return QString::fromStdString(std::to_string(i));
+    return QString::number(i);
 }
 
 QVBoxLayout* buildScrollContainer(QLayout* parent) {
@@ -56,4 +56,27 @@ QVBoxLayout* buildScrollContainer(QLayout* parent) {
     scrollArea->setWidgetResizable(true);
     parent->addWidget(scrollArea);
     return cContent;
+}
+
+void QueryBuilder::add(const QString &key, const QString &value) {
+    if (value.size() > 0) {
+        addAnd("UPPER(" + key + ") LIKE UPPER('%" + value + "%')");
+    }
+}
+
+void QueryBuilder::add(const QString &key, int value) {
+    if (true) { // TODO: ?
+        addAnd(key + "=" + str(value));
+    }
+}
+
+void QueryBuilder::addAnd(const QString &condition) {
+    if (query.size() != 0) {
+        query += "AND";
+    }
+    query += condition;
+}
+
+QString QueryBuilder::build() {
+    return query;
 }

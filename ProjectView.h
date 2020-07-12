@@ -17,6 +17,19 @@ enum ProjectType {
     OTHER, PROJECT, THESIS
 };
 
+// TODO: tr()   Translate
+const std::map<ProjectType, QString> projectType2Name {
+        {OTHER, "Sonstigesproject"},
+        {PROJECT, "Projektarbeit"},
+        {THESIS, "Abschlussarbeit"}
+};
+
+const std::map<QString, ProjectType> name2ProjectType {
+        {projectType2Name.find(OTHER)->second, OTHER},
+        {projectType2Name.find(PROJECT)->second, PROJECT},
+        {projectType2Name.find(THESIS)->second, THESIS},
+};
+
 const QString TAGS_SEPARATOR = ";";
 
 class ProjectView : public QFrame {

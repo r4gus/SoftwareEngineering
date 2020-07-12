@@ -14,8 +14,7 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFormLayout>
 
-SearchView::SearchView()
-{
+SearchView::SearchView() {
     auto containerRoot = new QHBoxLayout;
     addLayout(containerRoot);
     {
@@ -27,20 +26,25 @@ SearchView::SearchView()
             auto containerSearch = new QFormLayout();
             containerLeftSide->addLayout(containerSearch);
             {
-                tfSearchTitle = new QLineEdit;
-                containerSearch->addRow(tr("Titel:"), tfSearchTitle);
+                tfSearchKeyword = new QLineEdit;
+                containerSearch->addRow(tr("Stichwort:"), tfSearchKeyword);
                 tfSearchAuthor = new QLineEdit;
                 containerSearch->addRow(tr("Bearbeiter:"), tfSearchAuthor);
                 tfSearchLecturer = new QLineEdit;
                 containerSearch->addRow(tr("Betreuer:"), tfSearchLecturer);
-                tfSearchTags = new QLineEdit;
-                containerSearch->addRow(tr("Tags:"), tfSearchTags);
                 containerSearch->addRow(tr("Zeitraum"), new QLabel);
                 calendarSearchTimeFrom = new QCalendarWidget;
                 containerSearch->addRow(tr("Von:"), calendarSearchTimeFrom);
                 calendarSearchTimeTo = new QCalendarWidget;
                 containerSearch->addRow(tr("Bis:"), calendarSearchTimeTo);
                 dropdownSearchType = new QComboBox;
+                // TODO: "Alle" to constant field
+                dropdownSearchType->insertItems(0, {
+                        tr("Alle"),
+                        projectType2Name.find(OTHER)->second,
+                        projectType2Name.find(THESIS)->second,
+                        projectType2Name.find(PROJECT)->second,
+                });
                 containerSearch->addRow(tr("Typ:"), dropdownSearchType);
             }
             btnSearch = new QPushButton(tr("Suche"));
@@ -83,28 +87,42 @@ bool hasPermission(const Nutzer &user) {
 
 void SearchView::search() {
     clearLayout(containerProjectsList);
-
-    auto projects = SonstigesProjekt::query_all();
-    for (const auto& project : projects) {
-        auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
-        containerProjectsList->addWidget(vProject);
+    auto allTypes = dropdownSearchType->currentText() == "Alle";  // TODO: replace with field
+    ProjectType projectType;
+    if ((name2ProjectType.find(dropdownSearchType->currentText())) != name2ProjectType.end()) {
+        projectType = name2ProjectType.find(dropdownSearchType->currentText())->second;
     }
-    auto projectsThesis = Abschlussarbeit::query_all();
-    for (const auto& project : projectsThesis) {
-        auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
-        containerProjectsList->addWidget(vProject);
+    QueryBuilder queryBuilder;
+    queryBuilder.add("titel", tfSearchKeyword->text());
+    // TODO: add all
+    auto query = queryBuilder.build();
+    if (allTypes || projectType == OTHER) {
+        auto projects = SonstigesProjekt::query(query);
+        for (const auto &project : projects) {
+            auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
+            containerProjectsList->addWidget(vProject);
+        }
     }
-    auto projectsProject = Projektarbeit::query_all();
-    for (const auto& project : projectsProject) {
-        auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
-        containerProjectsList->addWidget(vProject);
+    if (allTypes || projectType == THESIS) {
+        auto projectsThesis = Abschlussarbeit::query(query);
+        for (const auto &project : projectsThesis) {
+            auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
+            containerProjectsList->addWidget(vProject);
+        }
+    }
+    if (allTypes || projectType == PROJECT) {
+        auto projectsProject = Projektarbeit::query(query);
+        for (const auto &project : projectsProject) {
+            auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
+            containerProjectsList->addWidget(vProject);
+        }
     }
 }
 
 void SearchView::openAddProject() {
     auto projectView = new ProjectEditView;
     auto popup = openPopup(projectView);
-    connect(projectView, &ProjectEditView::requestClose, [popup]{ popup->close(); });
+    connect(projectView, &ProjectEditView::requestClose, [popup] { popup->close(); });
     connect(projectView, &ProjectEditView::saved, this, &SearchView::addNewProject);
 }
 
@@ -113,7 +131,7 @@ void SearchView::loginLogout() {
         // login
         auto loginView = new LoginView;
         auto popup = openPopup(loginView);
-        connect(loginView, &LoginView::requestClose, [popup]{ popup->close(); });
+        connect(loginView, &LoginView::requestClose, [popup] { popup->close(); });
     } else {
         // logout
         MainWindow::get().user = Nutzer::guest();
@@ -130,15 +148,18 @@ void SearchView::addNewProject(int id, ProjectType projectType) {
     auto query = "arbeitID='" + str(id) + "'";
     if (projectType == PROJECT) {
         auto project = queryOne<Projektarbeit>(Projektarbeit::query, query);
-        containerProjectsList->addWidget(new ProjectView(project, containerProjectsList, hasPermission(project.professor())));
+        containerProjectsList->addWidget(
+                new ProjectView(project, containerProjectsList, hasPermission(project.professor())));
     }
     if (projectType == OTHER) {
         auto project = queryOne<SonstigesProjekt>(SonstigesProjekt::query, query);
-        containerProjectsList->addWidget(new ProjectView(project, containerProjectsList, hasPermission(project.professor())));
+        containerProjectsList->addWidget(
+                new ProjectView(project, containerProjectsList, hasPermission(project.professor())));
     }
     if (projectType == THESIS) {
         auto project = queryOne<Abschlussarbeit>(Abschlussarbeit::query, query);
-        containerProjectsList->addWidget(new ProjectView(project, containerProjectsList, hasPermission(project.professor())));
+        containerProjectsList->addWidget(
+                new ProjectView(project, containerProjectsList, hasPermission(project.professor())));
     }
 }
 
