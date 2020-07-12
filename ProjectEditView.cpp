@@ -5,10 +5,14 @@
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QButtonGroup>
 #include <QDebug>
+#include <QtGui/QRegExpValidator>
 #include "ProjectEditView.h"
 #include "gui_utils.h"
+#include "mainwindow.h"
 
-ProjectEditView::ProjectEditView() {
+ProjectEditView::ProjectEditView()
+    : isEdit(false), projectID(-1)
+{
 
     auto root = new QVBoxLayout;
     addLayout(root);
@@ -41,10 +45,12 @@ ProjectEditView::ProjectEditView() {
             cFields->addRow(tr("Beschreibung:"), tfDescription);
             cbFinished = new QCheckBox;
             cFields->addRow(tr("Abgeschlossen:"), cbFinished);
-            tfFieldOfStudy = new QLineEdit;
-            cFields->addRow(tr("Schwerpunkt:"), tfFieldOfStudy);
-            tfDegree = new QLineEdit;
-            cFields->addRow(tr("Abschluss:"), tfDegree);
+            cbStudy = new QComboBox;
+            auto studies = Studiengang::query_all();
+            for (auto &study : studies) {
+                cbStudy->insertItem(0, study.toString());
+            }
+            cFields->addRow(tr("Studiengang"), cbStudy);
         }
         // Thesis fields
         auto cThesisFields = new QFormLayout;
@@ -70,8 +76,12 @@ ProjectEditView::ProjectEditView() {
         root->addLayout(cProjectFields);
         {
             tfSemester = new QLineEdit;
+            tfSemester->setValidator(new QRegExpValidator(QRegExp("\\d{1,2}"))); // Only number inputs
             cProjectFields->addRow(tr("Semester"), tfSemester);
         }
+
+        lblErrorMessage = new QLabel;
+        root->addWidget(lblErrorMessage);
 
         auto cControlButtons = new QHBoxLayout;
         root->addLayout(cControlButtons);
@@ -95,6 +105,10 @@ ProjectEditView::ProjectEditView() {
 }
 
 ProjectEditView::ProjectEditView(int projectId, ProjectType projectType) : ProjectEditView(){
+    this->projectID = projectId;
+    this->isEdit = true;
+    originalProjectType = projectType;
+
     SonstigesProjekt projectCommon;
     auto query =  "arbeitID = '" + str(projectId) + "'";
     if (projectType == OTHER) {
@@ -124,14 +138,78 @@ ProjectEditView::ProjectEditView(int projectId, ProjectType projectType) : Proje
     tfTags->setText(projectCommon.stichwortliste().join("; "));
     tfDescription->setText(projectCommon.erlaeuterung());
     cbFinished->setChecked(projectCommon.abgeschlossen());
-    tfFieldOfStudy->setText(projectCommon.studiengang().schwerpunkt());
-    tfDegree->setText(projectCommon.studiengang().abschluss());
-
+    cbStudy->setCurrentIndex(cbStudy->findText(projectCommon.studiengang().toString()));
     btnSave->setText(tr("Speichern"));
 }
 
 void ProjectEditView::save() {
-    // TODO
+    // TODO: proper update
+    // Reset state
+    lblErrorMessage->setText("");
+
+    if (isEdit) {
+        auto originalTmpProject = SonstigesProjekt();
+        originalTmpProject.setId(projectID);
+        DB::session().remove(originalTmpProject);
+    }
+
+    // Common
+    auto title = tfTitle->text();
+    auto authorFirstName = tfAuthorFirstName->text();
+    auto authorLastName = tfAuthorLastName->text();
+    auto tags = tfTags->text().split(TAGS_SEPARATOR);
+    auto description = tfDescription->text();
+    auto finished = cbFinished->isChecked();
+    auto study = Studiengang::fromString(cbStudy->currentText());
+    // TODO: validate input?
+    auto professor = MainWindow::get().user;
+    auto student = Nutzer(authorFirstName, authorLastName, "", Nutzer::Role::student);
+    int locProjectID;
+    ProjectType projectType;
+    if (rbTypeProject->isChecked()) {
+        projectType = PROJECT;
+        auto project = Projektarbeit(title, tags, finished, description);
+        project.setSemester(tfSemester->text().toInt());
+        project.setBearbeiter(student);
+        project.setProfessor(professor);
+        project.setStudiengang(study);
+        try {
+            locProjectID = DB::session().add(project);
+        } catch (exception &e) {
+            lblErrorMessage->setText(tr("Fehler beim speichern: ") + e.what());
+        }
+    }
+    if (rbTypeThesis->isChecked()) {
+        projectType = THESIS;
+        auto project = Abschlussarbeit(title, tags, finished, description);
+        project.setBegin(calendarStart->selectedDate());
+        project.setEnd(calendarFinish->selectedDate());
+        project.setFirma(tfCompany->text());
+        project.setBearbeiter(student);
+        project.setProfessor(professor);
+        project.setStudiengang(study);
+        try {
+            locProjectID = DB::session().add(project);
+        } catch (exception &e) {
+            lblErrorMessage->setText(tr("Fehler beim speichern: ") + e.what());
+        }
+    }
+    if (rbTypeOther->isChecked()) {
+        projectType = OTHER;
+        auto project = SonstigesProjekt(title, tags, finished, description);
+        project.setBearbeiter(student);
+        project.setProfessor(professor);
+        project.setStudiengang(study);
+        try {
+            locProjectID = DB::session().add(project);
+        } catch (exception &e) {
+            lblErrorMessage->setText(tr("Fehler beim speichern: ") + e.what());
+        }
+    }
+    if (lblErrorMessage->text().size() == 0) {
+        emit saved(locProjectID, projectType);
+        emit requestClose();
+    }
 }
 
 void ProjectEditView::cancel() {

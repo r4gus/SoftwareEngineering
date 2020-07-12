@@ -29,6 +29,9 @@ public:
     static vector<Studiengang> query_all();
     static vector<Studiengang> query(QString &s);
 
+    QString toString();
+    static Studiengang fromString(const QString&);
+
     operator QString () const;
 private:
     int _id = -1;

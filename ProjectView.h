@@ -17,6 +17,8 @@ enum ProjectType {
     OTHER, PROJECT, THESIS
 };
 
+const QString TAGS_SEPARATOR = ";";
+
 class ProjectView : public QFrame {
     Q_OBJECT
 
@@ -42,7 +44,7 @@ private:
 private Q_SLOTS:
     void remove();
     void openEditWindow();
-    void edited(int);
+    void edited(int, ProjectType);
 
 };
 

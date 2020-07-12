@@ -86,6 +86,15 @@ Studiengang::query(QString &s)
     return vec;
 }
 
+QString Studiengang::toString() {
+    return _abschluss + ": " +_schwerpunkt;
+}
+
+Studiengang Studiengang::fromString(const QString &s) {
+    auto l = s.split(": ");
+    return Studiengang(l[1], l[0]);
+}
+
 Studiengang::operator QString() const
 {
     return "{ schwerpunkt: " + _schwerpunkt + ", abschluss: " + _abschluss + "}";

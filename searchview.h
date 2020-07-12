@@ -7,6 +7,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QComboBox>
+#include "ProjectView.h"
 
 class SearchView : public QVBoxLayout
 {
@@ -37,7 +38,7 @@ private Q_SLOTS:
     void openAddProject();
     void loginLogout();
     void openAdminView();
-    void addNewProject(int);
+    void addNewProject(int, ProjectType projectType);
     void toggleSort();
 };
 

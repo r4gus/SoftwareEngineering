@@ -82,6 +82,8 @@ bool hasPermission(const Nutzer &user) {
 
 
 void SearchView::search() {
+    clearLayout(containerProjectsList);
+
     auto projects = SonstigesProjekt::query_all();
     for (const auto& project : projects) {
         auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
@@ -103,6 +105,7 @@ void SearchView::openAddProject() {
     auto projectView = new ProjectEditView;
     auto popup = openPopup(projectView);
     connect(projectView, &ProjectEditView::requestClose, [popup]{ popup->close(); });
+    connect(projectView, &ProjectEditView::saved, this, &SearchView::addNewProject);
 }
 
 void SearchView::loginLogout() {
@@ -122,8 +125,21 @@ void SearchView::openAdminView() {
     MainWindow::get().showView(new AdminView);
 }
 
-void SearchView::addNewProject(int) {
-
+void SearchView::addNewProject(int id, ProjectType projectType) {
+    clearLayout(containerProjectsList);
+    auto query = "arbeitID='" + str(id) + "'";
+    if (projectType == PROJECT) {
+        auto project = queryOne<Projektarbeit>(Projektarbeit::query, query);
+        containerProjectsList->addWidget(new ProjectView(project, containerProjectsList, hasPermission(project.professor())));
+    }
+    if (projectType == OTHER) {
+        auto project = queryOne<SonstigesProjekt>(SonstigesProjekt::query, query);
+        containerProjectsList->addWidget(new ProjectView(project, containerProjectsList, hasPermission(project.professor())));
+    }
+    if (projectType == THESIS) {
+        auto project = queryOne<Abschlussarbeit>(Abschlussarbeit::query, query);
+        containerProjectsList->addWidget(new ProjectView(project, containerProjectsList, hasPermission(project.professor())));
+    }
 }
 
 void SearchView::toggleSort() {

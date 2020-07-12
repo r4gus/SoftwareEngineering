@@ -56,7 +56,7 @@ void ProjectView::build(const SonstigesProjekt &project) {
         cLeft->addRow(tr("Status:"),
                       new QLabel(project.abgeschlossen() ? tr("Abgeschlossen") : tr("In Arbeit")));
         cLeft->addRow(tr("Studiengang:"),
-                      new QLabel(project.studiengang().abschluss() + " - " + project.studiengang().schwerpunkt()));
+                      new QLabel(project.studiengang().toString()));
         if (projectType == ProjectType::PROJECT) {
             auto projectSpecial = static_cast<Projektarbeit>(project);
             cLeft->addRow(tr("Semester:"), new QLabel(str(projectSpecial.semester())));
@@ -92,7 +92,9 @@ void ProjectView::openEditWindow() {
     connect(view, &ProjectEditView::requestClose, [popup]{ popup->close(); });
 }
 
-void ProjectView::edited(int) {
+void ProjectView::edited(int newID, ProjectType newType) {
+    projectType = newType;
+    projectId = newID;
     auto query = "arbeitID='" + str(projectId) + "'";
     if (projectType == OTHER) {
         auto project = queryOne<SonstigesProjekt>(&SonstigesProjekt::query, query);

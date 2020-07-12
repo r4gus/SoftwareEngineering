@@ -13,6 +13,7 @@
 #include <QtWidgets/QCalendarWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QComboBox>
 #include "sonstigesprojekt.h"
 #include "ProjectView.h"
 
@@ -34,9 +35,7 @@ private:
     QCalendarWidget* calendarFinish;
     QLineEdit* tfCompany;
     QLineEdit* tfSemester;
-    // TODO: replace with drop downs
-    QLineEdit* tfFieldOfStudy;
-    QLineEdit* tfDegree;
+    QComboBox* cbStudy;
     QWidget* wThesisFields;
     QWidget* wProjectFields;
 
@@ -44,6 +43,10 @@ private:
     QPushButton* btnCancel;
 
     QLabel* lblErrorMessage;
+
+    bool isEdit;
+    int projectID;
+    ProjectType originalProjectType;
 
 public:
     ProjectEditView();
@@ -55,7 +58,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
 
-    void saved(int);
+    void saved(int, ProjectType);
 
     void requestClose();
 };
