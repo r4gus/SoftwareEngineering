@@ -84,11 +84,10 @@ Condition Condition::operator||(const Condition &other) const {
 Condition Condition::concat(const Condition &other, const QString &op) const {
     if (condition.size() > 0) {
         if (other.condition.size() > 0) {
-            return {"(" + condition + " " + op + " " + other.condition + ")" };
+            return Condition{"(" + condition + " " + op + " " + other.condition + ")" };
         }
-        return condition;
+        return Condition{condition};
     } else {
-        return other.condition;
+        return Condition{other.condition};
     }
 }
-
