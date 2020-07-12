@@ -6,20 +6,20 @@
 
 #include <QtWidgets/QPushButton>
 #include <QDebug>
+#include <utility>
 
-void clearLayout(QLayout* layout) {
-    while (QLayoutItem* item = layout->takeAt(0))
-    {
-        if (QWidget* widget = item->widget()) {
+void clearLayout(QLayout *layout) {
+    while (QLayoutItem *item = layout->takeAt(0)) {
+        if (QWidget *widget = item->widget()) {
             widget->deleteLater();
         }
-        if (QLayout* childLayout = item->layout())
+        if (QLayout *childLayout = item->layout())
             clearLayout(childLayout);
         delete item;
     }
 }
 
-QDialog* openPopup(QLayout* content){
+QDialog *openPopup(QLayout *content) {
     auto pDialog = new QDialog;
     pDialog->setModal(false);
     {
@@ -29,14 +29,14 @@ QDialog* openPopup(QLayout* content){
     return pDialog;
 }
 
-QDialog* openPopup(QWidget* content){
+QDialog *openPopup(QWidget *content) {
     auto layout = new QVBoxLayout;
     layout->addWidget(content);
     return openPopup(layout);
 }
 
 
-void replaceLayout(QBoxLayout* parent, QLayout* child) {
+void replaceLayout(QBoxLayout *parent, QLayout *child) {
     clearLayout(parent);
     parent->addLayout(child);
 }
@@ -45,7 +45,7 @@ QString str(int i) {
     return QString::number(i);
 }
 
-QVBoxLayout* buildScrollContainer(QLayout* parent) {
+QVBoxLayout *buildScrollContainer(QLayout *parent) {
     auto wScrollAreaContent = new QWidget;
     auto cContent = new QVBoxLayout(wScrollAreaContent);
     wScrollAreaContent->setLayout(cContent);
@@ -58,25 +58,37 @@ QVBoxLayout* buildScrollContainer(QLayout* parent) {
     return cContent;
 }
 
-void QueryBuilder::add(const QString &key, const QString &value) {
+
+
+Condition::Condition(const QString &key, const QString &value) {
     if (value.size() > 0) {
-        addAnd("UPPER(" + key + ") LIKE UPPER('%" + value + "%')");
+        condition = "UPPER(" + key + ") LIKE UPPER('%" + value + "%')";
+    } else {
+        condition = "";
     }
 }
 
-void QueryBuilder::add(const QString &key, int value) {
-    if (true) { // TODO: ?
-        addAnd(key + "=" + str(value));
+Condition::Condition(QString condition)
+        : condition(std::move(condition)) {
+
+}
+
+Condition Condition::operator&&(const Condition &other) const {
+    return concat(other, "AND");
+}
+
+Condition Condition::operator||(const Condition &other) const {
+    return concat(other, "OR");
+}
+
+Condition Condition::concat(const Condition &other, const QString &op) const {
+    if (condition.size() > 0) {
+        if (other.condition.size() > 0) {
+            return {"(" + condition + " " + op + " " + other.condition + ")" };
+        }
+        return condition;
+    } else {
+        return other.condition;
     }
 }
 
-void QueryBuilder::addAnd(const QString &condition) {
-    if (query.size() != 0) {
-        query += "AND";
-    }
-    query += condition;
-}
-
-QString QueryBuilder::build() {
-    return query;
-}
