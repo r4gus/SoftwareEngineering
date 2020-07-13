@@ -169,18 +169,13 @@ void ProjectEditView::save() {
     auto student = Nutzer(authorFirstName, authorLastName, "", Nutzer::Role::student);
     int locProjectID;
     ProjectType projectType;
+
+    SonstigesProjekt* projectCommon;
     if (rbTypeProject->isChecked()) {
         projectType = PROJECT;
         auto project = Projektarbeit(title, tags, finished, description);
+        projectCommon = &project;
         project.setSemester(tfSemester->text().toInt());
-        project.setBearbeiter(student);
-        project.setProfessor(professor);
-        project.setStudiengang(study);
-        try {
-            locProjectID = DB::session().add(project);
-        } catch (exception &e) {
-            lblErrorMessage->setText(tr("Fehler beim speichern: ") + e.what());
-        }
     }
     if (rbTypeThesis->isChecked()) {
         projectType = THESIS;
@@ -188,27 +183,28 @@ void ProjectEditView::save() {
         project.setBegin(calendarStart->selectedDate());
         project.setEnd(calendarFinish->selectedDate());
         project.setFirma(tfCompany->text());
-        project.setBearbeiter(student);
-        project.setProfessor(professor);
-        project.setStudiengang(study);
-        try {
-            locProjectID = DB::session().add(project);
-        } catch (exception &e) {
-            lblErrorMessage->setText(tr("Fehler beim speichern: ") + e.what());
-        }
     }
     if (rbTypeOther->isChecked()) {
         projectType = OTHER;
         auto project = SonstigesProjekt(title, tags, finished, description);
-        project.setBearbeiter(student);
-        project.setProfessor(professor);
-        project.setStudiengang(study);
-        try {
-            locProjectID = DB::session().add(project);
-        } catch (exception &e) {
-            lblErrorMessage->setText(tr("Fehler beim speichern: ") + e.what());
-        }
     }
+    projectCommon->setBearbeiter(student);
+    projectCommon->setProfessor(professor);
+    projectCommon->setStudiengang(study);
+    try {
+        if (rbTypeOther->isChecked()) {
+            locProjectID = DB::session().add(*projectCommon);
+        }
+        else if (rbTypeProject->isChecked()) {
+            locProjectID = DB::session().add((Projektarbeit&)*projectCommon);
+        }
+        if (rbTypeThesis->isChecked()) {
+            locProjectID = DB::session().add((Abschlussarbeit&)*projectCommon);
+        }
+    } catch (exception &e) {
+        lblErrorMessage->setText(tr("Fehler beim speichern: ") + e.what());
+    }
+
     if (lblErrorMessage->text().size() == 0) {
         emit saved(locProjectID, projectType);
         emit requestClose();

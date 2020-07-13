@@ -46,7 +46,12 @@ vector<Projektarbeit> Projektarbeit::query(QString s)
 
     if(!db.isValid()) throw InvalidDatabaseError();
 
-    qs += "SELECT arbeitID, titel, status, erlaeuterung, studiengangID, dozentID, studentID, semester FROM arbeit NATURAL JOIN projektarbeit ";
+    qs += "SELECT DISTINCT arbeit.arbeitID, arbeit.titel, arbeit.status, arbeit.erlaeuterung, arbeit.studiengangID, arbeit.dozentID, arbeit.studentID, semester "
+          "FROM arbeit NATURAL JOIN projektarbeit "
+          "LEFT JOIN nutzer student on arbeit.studentID = student.nutzerID "
+          "LEFT JOIN nutzer prof on arbeit.dozentID = prof.nutzerID "
+          "JOIN stichworte s on arbeit.arbeitID = s.arbeitID ";
+          ;
     if(!s.isEmpty()) qs += " WHERE " + s;
     qs += ";";
 

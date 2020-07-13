@@ -378,7 +378,7 @@ BOOST_AUTO_TEST_CASE( SonstigesProjekt_update_stichworte )
 
 BOOST_AUTO_TEST_CASE( arbeit_delet_1 )
 {
-    QString query = "arbeitID = 1";
+    QString query = "arbeit.arbeitID = 1";
     std::vector<SonstigesProjekt> vec1 = SonstigesProjekt::query(query);
     std::vector<SonstigesProjekt> vec2 = SonstigesProjekt::query_all();
     DB::session().remove(vec1[0]);
@@ -445,7 +445,7 @@ BOOST_AUTO_TEST_CASE( Projektarbeit_update_1 )
 
 BOOST_AUTO_TEST_CASE( projektarbeit_delet_1 )
 {
-    QString query = "arbeitID = 3";
+    QString query = "arbeit.arbeitID = 3";
     std::vector<Projektarbeit> vec1 = Projektarbeit::query(query);
     std::vector<Projektarbeit> vec2 = Projektarbeit::query_all();
     DB::session().remove(vec1[0]);
@@ -508,6 +508,7 @@ BOOST_AUTO_TEST_CASE( Abschlussarbeit_update_1 )
     BOOST_CHECK(vec[0].stichwortliste()[2] == "WeiteresStichwort");
     BOOST_CHECK(vec[0].studiengang().schwerpunkt() == "IN-SE");
     BOOST_CHECK(vec[0].begin().toString() == new_begindate.toString() );
+    auto x = vec[0].end().toString();
     BOOST_CHECK(vec[0].end().toString() == "Mon Mar 1 2021");
 
     vec[0].setBegin(old_begindate);
@@ -521,7 +522,7 @@ BOOST_AUTO_TEST_CASE( Abschlussarbeit_update_1 )
 
 BOOST_AUTO_TEST_CASE( abschlussarbeit_delet_1 )
 {
-    QString query = "arbeitID = 4";
+    QString query = "arbeit.arbeitID = 4";
     std::vector<Abschlussarbeit> vec1 = Abschlussarbeit::query(query);
     std::vector<Abschlussarbeit> vec2 = Abschlussarbeit::query_all();
     DB::session().remove(vec1[0]);
