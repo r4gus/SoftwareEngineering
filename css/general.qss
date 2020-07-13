@@ -18,6 +18,11 @@ QLabel {
     color: #e3e3e3;
 }
 
+QLabel:disabled {
+    color: #aaaaaa;
+}
+
+
 QPushButton {
     background-color: #009688;
     color: #e3e3e3;
@@ -33,6 +38,11 @@ QLineEdit {
 QLineEdit:focus {
     border: 2px solid #487c7f;
     background-color: #2a2a2a;
+}
+
+QLineEdit:disabled {
+    border: 2px solid #333333;
+    background-color: #555555;
 }
 
 QComboBox {
@@ -52,4 +62,9 @@ QComboBox QAbstractItemView {
     background-color:  #101c25;
     color: #e3e3e3;
     padding: 3px;
+}
+
+
+QRadioButton {
+    color: #e3e3e3;
 }

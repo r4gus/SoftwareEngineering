@@ -78,9 +78,13 @@ void ProjectView::build(const SonstigesProjekt &project) {
     cRoot->addLayout(cRight);
     {
         if (editable) {
-            btnEdit = new QPushButton(tr("Edit"));
+            int width = 80;
+            int height = 20;
+            btnEdit = new QPushButton(tr("Bearbeiten"));
+            btnEdit->setFixedSize(width, height);
             cRight->addWidget(btnEdit);
-            btnRemove = new QPushButton(tr("Remove"));
+            btnRemove = new QPushButton(tr("Löschen"));
+            btnRemove->setFixedSize(width, height);
             cRight->addWidget(btnRemove);
             connect(btnEdit, SIGNAL(clicked()), this, SLOT(openEditWindow()));
             connect(btnRemove, SIGNAL(clicked()), this, SLOT(remove()));
