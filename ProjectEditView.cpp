@@ -166,7 +166,7 @@ void ProjectEditView::save() {
     auto study = Studiengang::fromString(cbStudy->currentText());
     // TODO: validate input?
     auto professor = MainWindow::get().user;
-    auto student = Nutzer(authorFirstName, authorLastName, "", Nutzer::Role::student);
+    auto student = Nutzer(authorFirstName, authorLastName, authorFirstName + authorLastName, Nutzer::Role::student); // TODO: email?
     int locProjectID;
     ProjectType projectType;
 
@@ -180,6 +180,7 @@ void ProjectEditView::save() {
     if (rbTypeThesis->isChecked()) {
         projectType = THESIS;
         auto project = Abschlussarbeit(title, tags, finished, description);
+        projectCommon = &project;
         project.setBegin(calendarStart->selectedDate());
         project.setEnd(calendarFinish->selectedDate());
         project.setFirma(tfCompany->text());
@@ -193,6 +194,9 @@ void ProjectEditView::save() {
     projectCommon->setProfessor(professor);
     projectCommon->setStudiengang(study);
     try {
+        auto o1 = rbTypeOther->isChecked();
+        auto o2 = rbTypeProject->isChecked();
+        auto o3 = rbTypeThesis->isChecked();
         if (rbTypeOther->isChecked()) {
             locProjectID = DB::session().add(*projectCommon);
         }

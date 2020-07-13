@@ -35,6 +35,7 @@ SearchView::SearchView() {
                 containerSearch->addRow(tr("Betreuer:"), tfSearchLecturer);
                 containerSearch->addRow(tr("Zeitraum"), new QLabel);
                 calendarSearchTimeFrom = new QCalendarWidget;
+                calendarSearchTimeFrom->setSelectedDate(QDate{2000, 1, 1});
                 containerSearch->addRow(tr("Von:"), calendarSearchTimeFrom);
                 calendarSearchTimeTo = new QCalendarWidget;
                 containerSearch->addRow(tr("Bis:"), calendarSearchTimeTo);
@@ -110,7 +111,11 @@ void SearchView::search() {
         }
     }
     if (allTypes || projectType == THESIS) {
-        auto projectsThesis = Abschlussarbeit::query(query);
+        conditionBuilder = conditionBuilder
+                           && Condition{"beginn >='" + calendarSearchTimeFrom->selectedDate().toString("yyyy-MM-dd") + "'"}
+                           && Condition{"ende <='" + calendarSearchTimeTo->selectedDate().toString("yyyy-MM-dd") + "'"}
+                ;
+        auto projectsThesis = Abschlussarbeit::query(conditionBuilder.condition);
         for (const auto &project : projectsThesis) {
             auto vProject = new ProjectView(project, containerProjectsList, hasPermission(project.professor()));
             containerProjectsList->addWidget(vProject);
