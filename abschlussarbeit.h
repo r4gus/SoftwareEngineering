@@ -2,6 +2,7 @@
 #define ABSCHLUSSARBEIT_H
 
 #include "sonstigesprojekt.h"
+#include "projektarbeit.h"
 #include <QDate>
 
 class Abschlussarbeit : public SonstigesProjekt
@@ -43,6 +44,18 @@ public:
         this->setAbgeschlossen(rhs.abgeschlossen());
         this->setStichwortliste(rhs.stichwortliste());
     }
+
+    Abschlussarbeit(const Projektarbeit &rhs) {
+        this->setId(rhs.id());
+        this->setTitel(rhs.titel());
+        this->setProfessor(rhs.professor());
+        this->setBearbeiter(rhs.bearbeiter());
+        this->setStudiengang(rhs.studiengang());
+        this->setErlaeuterung(rhs.erlaeuterung());
+        this->setAbgeschlossen(rhs.abgeschlossen());
+        this->setStichwortliste(rhs.stichwortliste());
+    }
+
 
     static vector<Abschlussarbeit> query_all();
     static vector<Abschlussarbeit> query(QString condition);
