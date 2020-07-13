@@ -31,6 +31,8 @@ public:
     SonstigesProjekt(QString titel, QStringList stichwortliste, bool abgeschlossen) :
         _titel(titel), _stichwortliste(stichwortliste), _abgeschlossen(abgeschlossen) {}
 
+    virtual ~SonstigesProjekt() = default;
+
     static vector<SonstigesProjekt> query_all();
     static vector<SonstigesProjekt> query(QString condition);
 

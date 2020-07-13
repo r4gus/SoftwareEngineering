@@ -187,6 +187,7 @@ void ProjectEditView::save() {
     if (rbTypeOther->isChecked()) {
         projectType = OTHER;
         auto project = SonstigesProjekt(title, tags, finished, description);
+        projectCommon = &project;
     }
     projectCommon->setBearbeiter(student);
     projectCommon->setProfessor(professor);

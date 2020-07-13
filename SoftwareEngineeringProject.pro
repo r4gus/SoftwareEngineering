@@ -34,7 +34,6 @@ SOURCES += \
     ChangePasswordView.cpp \
     AdminView.cpp \
     LecturerView.cpp \
-    test.cpp
 
 HEADERS += \
     DB.h \

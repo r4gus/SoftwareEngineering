@@ -51,8 +51,8 @@ private:
     ProjectType projectType;
     QHBoxLayout *cRoot;
 
-    void build(const SonstigesProjekt& project);
-    void update(const SonstigesProjekt& project);
+    void build(const SonstigesProjekt *p);
+    void update(const SonstigesProjekt *project);
 
 private Q_SLOTS:
     void remove();

@@ -22,6 +22,8 @@ QDialog* openPopup(QWidget* content);
 
 void replaceLayout(QBoxLayout* parent, QLayout* child);
 
+QString str(unsigned int i);
+
 QString str(int i);
 
 QVBoxLayout* buildScrollContainer(QLayout* parent);

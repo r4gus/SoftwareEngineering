@@ -46,6 +46,10 @@ QString str(int i) {
     return QString::number(i);
 }
 
+QString str(unsigned int i) {
+    return QString::number(i);
+}
+
 QVBoxLayout *buildScrollContainer(QLayout *parent) {
     auto wScrollAreaContent = new QWidget;
     wScrollAreaContent->setProperty("style", "elevation-10");

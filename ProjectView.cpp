@@ -17,8 +17,6 @@ ProjectView::ProjectView(const SonstigesProjekt &project, QVBoxLayout *parent, b
     cRoot = new QHBoxLayout;
 
     setLayout(cRoot);
-    build(project);
-
     // STYLE
     setFrameShape(QFrame::Shape::StyledPanel);
     setLineWidth(3);
@@ -26,14 +24,17 @@ ProjectView::ProjectView(const SonstigesProjekt &project, QVBoxLayout *parent, b
 
 ProjectView::ProjectView(const SonstigesProjekt &project, QVBoxLayout *parent, bool editable)
         : ProjectView(project, parent, editable, ProjectType::OTHER) {
+    build(&project);
 }
 
 ProjectView::ProjectView(const Abschlussarbeit &project, QVBoxLayout *parent, bool editable)
         : ProjectView(project, parent, editable, ProjectType::THESIS) {
+    build(&project);
 }
 
 ProjectView::ProjectView(const Projektarbeit &project, QVBoxLayout *parent, bool editable)
         : ProjectView(project, parent, editable, ProjectType::PROJECT) {
+    build(&project);
 }
 
 void ProjectView::remove() {
@@ -41,12 +42,13 @@ void ProjectView::remove() {
     parent->removeWidget(this);
 }
 
-void ProjectView::update(const SonstigesProjekt &project) {
+void ProjectView::update(const SonstigesProjekt *project) {
     clearLayout(cRoot);
     build(project);
 }
 
-void ProjectView::build(const SonstigesProjekt &project) {
+void ProjectView::build(const SonstigesProjekt *p) {
+    auto project = *p;
     auto cLeft = new QFormLayout;
     cRoot->addLayout(cLeft);
     {
@@ -60,11 +62,12 @@ void ProjectView::build(const SonstigesProjekt &project) {
         cLeft->addRow(tr("Studiengang:"),
                       new QLabel(project.studiengang().toString()));
         if (projectType == ProjectType::PROJECT) {
-            auto projectSpecial = static_cast<Projektarbeit>(project);
+            auto projectSpecial = *dynamic_cast<const Projektarbeit*>(p);
+            auto x = str(projectSpecial.semester());
             cLeft->addRow(tr("Semester:"), new QLabel(str(projectSpecial.semester())));
         }
         if (projectType == ProjectType::THESIS) {
-            auto projectSpecial = static_cast<Abschlussarbeit>(project);
+            auto projectSpecial = *dynamic_cast<const Abschlussarbeit*>(p);
             cLeft->addRow(tr("Firma:"), new QLabel(projectSpecial.firma()));
             cLeft->addRow(tr("Zeitraum"),
                           new QLabel(
@@ -105,14 +108,14 @@ void ProjectView::edited(int newID, ProjectType newType) {
     auto query = "arbeit.arbeitID='" + str(projectId) + "'";
     if (projectType == OTHER) {
         auto project = queryOne<SonstigesProjekt>(&SonstigesProjekt::query, query);
-        update(project);
+        update(&project);
     }
     if (projectType == THESIS) {
         auto project = queryOne<Abschlussarbeit>(&Abschlussarbeit::query, query);
-        update(project);
+        update(&project);
     }
     if (projectType == PROJECT) {
         auto project = queryOne<Projektarbeit>(&Projektarbeit::query, query);
-        update(project);
+        update(&project);
     }
 }
