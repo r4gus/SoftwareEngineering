@@ -33,11 +33,16 @@ LecturerEditView::~LecturerEditView() {
 }
 
 void LecturerEditView::save() {
+    ui->lblErrorMessage->setText(tr(""));
+
     auto firstName = ui->tfFirstName->text();
     auto lastName = ui->tfLastName->text();
     auto email = ui->tfEmail->text();
     auto password = ui->tfPassword->text();
-    // TODO: Input validation
+    if (firstName.size() == 0 || lastName.size() == 0 || email.size() == 0 || (!isEdit && password.size() == 0)) {
+        ui->lblErrorMessage->setText(tr("Nicht alle erforderlichen Felder ausgefüllt"));
+        return;
+    }
     auto n = Nutzer(firstName, lastName, email, Nutzer::Role::dozent);
     if (isEdit) {
         n.setId(lecturerID);
@@ -54,6 +59,7 @@ void LecturerEditView::save() {
         } catch (DBException e) {
             qDebug() << e.err();
             qDebug() << e.what();
+            ui->lblErrorMessage->setText(tr("Fehler beim erstellen"));
         }
     } else {
         n.set_password(password);
@@ -62,6 +68,7 @@ void LecturerEditView::save() {
         } catch (DBException e) {
             qDebug() << e.err();
             qDebug() << e.what();
+            ui->lblErrorMessage->setText(tr("Fehler beim erstellen"));
         }
     }
     emit saved(lecturerID);

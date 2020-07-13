@@ -18,16 +18,12 @@ public:
 
 private:
     QPushButton *btnAdd;
-    QLineEdit *tfSearch;
-    QPushButton *btnSearch;
     QVBoxLayout *cLecturersList;
     QPushButton *btnToSearch;
 
 private Q_SLOTS:
 
     void openAddNewLecturer();
-
-    void search();
 
     void toSearchView();
 
