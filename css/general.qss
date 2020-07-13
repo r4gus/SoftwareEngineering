@@ -1,0 +1,55 @@
+*[style="h1"] {
+    font-size: 24px;
+}
+
+*[style="background"] {
+    background-color:  #1d3140;
+}
+
+*[style="elevation-10"] {
+    background-color:  #101c25;
+}
+
+*[style="elevation-20"] {
+    background-color:  #2c4248;
+}
+
+QLabel {
+    color: #e3e3e3;
+}
+
+QPushButton {
+    background-color: #009688;
+    color: #e3e3e3;
+}
+
+QLineEdit {
+    background-color: #2d2d2d;
+    color: #e3e3e3;
+    border: 2px solid #164a4c;
+    padding: 3px;
+}
+
+QLineEdit:focus {
+    border: 2px solid #487c7f;
+    background-color: #2a2a2a;
+}
+
+QComboBox {
+    background-color:  #101c25;
+    color: #e3e3e3;
+    selection-background-color: #101c25;
+    padding: 3px;
+}
+
+QComboBox:focus {
+    border: 1px solid #303c55;
+}
+
+QComboBox QAbstractItemView {
+    border: 2px solid #164a4c;
+    selection-background-color: #555e5e;
+    background-color:  #101c25;
+    color: #e3e3e3;
+    padding: 3px;
+}

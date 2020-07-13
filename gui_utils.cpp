@@ -21,6 +21,7 @@ void clearLayout(QLayout *layout) {
 
 QDialog *openPopup(QLayout *content) {
     auto pDialog = new QDialog;
+    pDialog->setProperty("style", "background");
     pDialog->setModal(false);
     {
         pDialog->setLayout(content);
@@ -47,6 +48,7 @@ QString str(int i) {
 
 QVBoxLayout *buildScrollContainer(QLayout *parent) {
     auto wScrollAreaContent = new QWidget;
+    wScrollAreaContent->setProperty("style", "elevation-10");
     auto cContent = new QVBoxLayout(wScrollAreaContent);
     wScrollAreaContent->setLayout(cContent);
     auto scrollArea = new QScrollArea;

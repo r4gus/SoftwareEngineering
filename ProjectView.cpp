@@ -13,7 +13,9 @@
 
 ProjectView::ProjectView(const SonstigesProjekt &project, QVBoxLayout *parent, bool editable, ProjectType projectType)
         : projectId(project.id()), parent(parent), editable(editable), projectType(projectType) {
+    setProperty("style", "elevation-20");
     cRoot = new QHBoxLayout;
+
     setLayout(cRoot);
     build(project);
 

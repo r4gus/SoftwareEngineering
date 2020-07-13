@@ -8,6 +8,7 @@
 #include <iostream>
 #include <QTranslator>
 #include <QtWidgets/QApplication>
+#include <QtCore/QFile>
 
 
 int main(int argc, char *argv[])
@@ -32,9 +33,19 @@ int main(int argc, char *argv[])
     for(auto &e: vec) {
         std::cout << e << endl;
     }
+    MainWindow::get().setMinimumSize(1000, 600);
+    // Style
+    QFile styleFile(":/css/general.qss");
+    if (styleFile.open(QFile::ReadOnly)) {
+        QTextStream textStream(&styleFile);
+        QString stylesheet = textStream.readAll();
+        styleFile.close();
+        a.setStyleSheet(stylesheet);
+    }
 
     MainWindow::get().show();
     MainWindow::get().showView(new SearchView);
+
     return a.exec();
 
 }

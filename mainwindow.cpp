@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
         , ui(new Ui::MainWindow)
         , user(Nutzer::guest())
 {
+    setProperty("style", "background");
     ui->setupUi(this);
     root = new QVBoxLayout;
     ui->centralwidget->setLayout(root);

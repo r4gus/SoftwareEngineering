@@ -22,6 +22,7 @@ SearchView::SearchView() {
         containerRoot->addLayout(containerLeftSide);
         {
             auto lblSearchCriteria = new QLabel(tr("Suchkriterien"));
+            lblSearchCriteria->setProperty("style", "h1");
             containerLeftSide->addWidget(lblSearchCriteria);
             auto containerSearch = new QFormLayout();
             containerLeftSide->addLayout(containerSearch);

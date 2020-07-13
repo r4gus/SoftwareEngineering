@@ -72,3 +72,5 @@ DISTFILES += \
 INCLUDEPATH += C:/boost/boost_1_73_0 # replace this path with your own path to boost lib
 
 TRANSLATIONS = strings_en.ts
+
+RESOURCES = application.qrc
