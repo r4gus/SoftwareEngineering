@@ -2,7 +2,6 @@
 #define PROJEKTARBEIT_H
 
 #include "sonstigesprojekt.h"
-#include "abschlussarbeit.h"
 
 
 class Projektarbeit : public SonstigesProjekt
@@ -29,17 +28,6 @@ public:
     void setSemester(const unsigned &semester);
 
     Projektarbeit(const SonstigesProjekt &rhs) {
-        this->setId(rhs.id());
-        this->setTitel(rhs.titel());
-        this->setProfessor(rhs.professor());
-        this->setBearbeiter(rhs.bearbeiter());
-        this->setStudiengang(rhs.studiengang());
-        this->setErlaeuterung(rhs.erlaeuterung());
-        this->setAbgeschlossen(rhs.abgeschlossen());
-        this->setStichwortliste(rhs.stichwortliste());
-    }
-
-    Projektarbeit(const Abschlussarbeit &rhs) {
         this->setId(rhs.id());
         this->setTitel(rhs.titel());
         this->setProfessor(rhs.professor());

@@ -20,19 +20,13 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.installTranslator(&translator);
 
-    QStringList v;
-    v.push_back("Ein Stichwort");
-    Studiengang s = Studiengang("IN-IS", "Bachelor");
-    try {
-        DB::session().add(s);
-    } catch(DatabaseTransactionError &e) {
-        std::cout << "Couldn't add s to database" << std::endl;
-    }
+    DB::session();
+    QSqlDatabase db = QSqlDatabase::database();
 
-    vector<Studiengang> vec = Studiengang::query_all();
-    for(auto &e: vec) {
-        std::cout << e << endl;
-    }
+    DB::clean(db);
+    DB::initialize(db);
+    DB::test(db);
+
     MainWindow::get().setMinimumSize(1000, 600);
     // Style
     QFile styleFile(":/css/general.qss");

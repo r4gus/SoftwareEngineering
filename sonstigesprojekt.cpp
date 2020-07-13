@@ -40,13 +40,19 @@ SonstigesProjekt::query(QString s)
 
     if(!db.isValid()) throw InvalidDatabaseError();
 
-    qs += "SELECT DISTINCT arbeit.arbeitID, arbeit.titel, arbeit.status, arbeit.erlaeuterung, arbeit.studiengangID, arbeit.dozentID, arbeit.studentID "
-          "FROM arbeit "
-          "LEFT JOIN nutzer student on arbeit.studentID = student.nutzerID "
-          "LEFT JOIN nutzer prof on arbeit.dozentID = prof.nutzerID "
-          "JOIN stichworte s on arbeit.arbeitID = s.arbeitID ";
-    // TODO: Only Sonstigesprojekt and not Abschlussarbeit or Projektarbeit?!
+    qs = "SELECT DISTINCT arbeit.arbeitID, arbeit.titel, arbeit.status, arbeit.erlaeuterung, arbeit.studiengangID, arbeit.dozentID, arbeit.studentID "
+    "FROM arbeit "
+    "LEFT JOIN nutzer student on arbeit.studentID = student.nutzerID "
+    "LEFT JOIN nutzer prof on arbeit.dozentID = prof.nutzerID "
+    "JOIN stichworte s on arbeit.arbeitID = s.arbeitID ";
     if(!s.isEmpty()) qs += " WHERE " + s;
+    qs += " EXCEPT "
+    "SELECT DISTINCT arbeit.arbeitID, arbeit.titel, arbeit.status, arbeit.erlaeuterung, arbeit.studiengangID, arbeit.dozentID, arbeit.studentID "
+    "FROM arbeit "
+    "NATURAL JOIN "
+    "(select projektarbeit.arbeitID FROM projektarbeit "
+    "UNION ALL "
+    "SELECT abschlussarbeit.arbeitID FROM abschlussarbeit) ";
     qs += ";";
 
     log("Query", qs);

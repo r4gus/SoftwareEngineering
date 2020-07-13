@@ -283,8 +283,36 @@ DB::update(SonstigesProjekt &s)
     QSqlQuery query;
     QSqlDatabase db = QSqlDatabase::database();
     int ret_val = s.id();
+    int dozent_id, student_id;
 
     if( !db.isValid() ) throw InvalidDatabaseError("Invalid database connection.");
+
+    // add dozent to database if id <= -1
+    try {
+        Nutzer p = s.professor();
+        if(s.professor().id() <= -1) {
+            dozent_id = DB::session().add(p);
+        } else {
+
+            dozent_id = DB::session().update(p);
+        }
+    } catch(exception &e) {
+        log("error", "in update(SonstigesProjekt): While potentially inserting or updating dozent into database");
+        throw e;
+    }
+
+    // add student to database if id <= -1
+    try {
+        Nutzer b = s.bearbeiter();
+        if(s.bearbeiter().id() <= -1) {
+            student_id= DB::session().add(b);
+        } else {
+            student_id = DB::session().update(b);
+        }
+    } catch(exception &e) {
+        log("error", "in add(ARBEIT): While potentially inserting or updating student into database");
+        throw e;
+    }
 
     query.prepare("UPDATE arbeit SET titel = :titel, status = :status, erlaeuterung = :erl, "
                   "studiengangID = :studiengang_id, dozentID = :d_id, studentID = :s_id "
@@ -293,8 +321,8 @@ DB::update(SonstigesProjekt &s)
     query.bindValue(":status", s.abgeschlossen());
     query.bindValue(":erl", s.erlaeuterung());
     query.bindValue(":studiengang_id", s.studiengang().id());
-    query.bindValue(":d_id", s.professor().id());
-    query.bindValue(":s_id", s.bearbeiter().id());
+    query.bindValue(":d_id", dozent_id);
+    query.bindValue(":s_id", student_id);
     query.bindValue(":arbeitID", s.id());
 
     if(!query.exec()) {
