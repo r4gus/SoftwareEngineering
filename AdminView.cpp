@@ -18,12 +18,8 @@ AdminView::AdminView() {
         auto cControl = new QHBoxLayout;
         cRoot->addLayout(cControl);
         {
-            btnAdd = new QPushButton(tr("Hinzufügen"));
+            btnAdd = new QPushButton(tr("Neuen Dozent hinzufügen"));
             cControl->addWidget(btnAdd);
-            tfSearch = new QLineEdit;
-            cControl->addWidget(tfSearch);
-            btnSearch = new QPushButton(tr("Suchen"));
-            cControl->addWidget(btnSearch);
         }
         btnToSearch = new QPushButton(tr("Zur Suche"));
         cRoot->addWidget(btnToSearch);
@@ -34,10 +30,14 @@ AdminView::AdminView() {
 
     // SIGNALS and SLOTS
     connect(btnToSearch, &QPushButton::clicked, [this] { toSearchView(); });
-    connect(btnSearch, &QPushButton::clicked, [this] { search(); });
     connect(btnAdd, &QPushButton::clicked, [this] { openAddNewLecturer(); });
 
-    search();
+    // load all
+    auto users = Nutzer::query("role=" + str(Nutzer::Role::dozent));
+    for (const auto &user : users) {
+        auto lecturerView = new LecturerView(user, cLecturersList);
+        cLecturersList->addWidget(lecturerView);
+    }
 }
 
 void AdminView::openAddNewLecturer() {
@@ -47,14 +47,6 @@ void AdminView::openAddNewLecturer() {
     auto popup = openPopup(parent);
     connect(content, &LecturerEditView::requestClose, [popup]{ popup->close(); });
     connect(content, &LecturerEditView::saved, this, &AdminView::addNewLecturer);
-}
-
-void AdminView::search() {
-    auto users = Nutzer::query("role=" + str(Nutzer::Role::dozent));
-    for (const auto user : users) {
-        auto lecturerView = new LecturerView(user, cLecturersList);
-        cLecturersList->addWidget(lecturerView);
-    }
 }
 
 void AdminView::toSearchView() {

@@ -44,8 +44,6 @@ public:
         this->setStichwortliste(rhs.stichwortliste());
     }
 
-
-
     static vector<Abschlussarbeit> query_all();
     static vector<Abschlussarbeit> query(QString condition);
 
