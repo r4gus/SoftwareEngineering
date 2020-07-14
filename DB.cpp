@@ -60,8 +60,6 @@ DB::DB()
     } else {
         qDebug() << db.lastError();
     }
-
-    initialize(db); // init database
 }
 
 DB::~DB()
@@ -637,6 +635,12 @@ DB::initialize(QSqlDatabase &db)
             qDebug() << "Database error in DB::initialize: " << query.lastError().text();
             return false;
         }
+    }
+
+    if(Nutzer::query("nutzer.role = " + QString::number(Nutzer::Role::administrator)).empty()) {
+        Nutzer admin("admin", "admin", "Admin", Nutzer::administrator);
+        admin.set_password("nimdA");
+        DB::session().add(admin);
     }
 
     return true;

@@ -74,6 +74,9 @@ This appliction was created as a practical exercise for our Software Engineering
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
+
+Boost is only necessary if you want to run the tests.
+
 [Download boost](https://www.boost.org/users/download/) from their website and unpack it.
 ```Bash
 unzip boost_1_73_0.zip
