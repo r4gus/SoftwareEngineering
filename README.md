@@ -1,4 +1,4 @@
-# Software Engineering Poject
+# Software Engineering Project
 
 <!-- PROJECT SHIELDS -->
 <!--
