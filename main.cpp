@@ -28,6 +28,8 @@ int main(int argc, char *argv[])
     }
     DB::initialize(db); // initialize db
 
+    addStudiengang();
+
 
     // Translator
     QTranslator translator;

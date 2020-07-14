@@ -137,4 +137,6 @@ public:
  * \param msg Message string
  */
 void log(const QString& type, const QString& msg);
+
+void addStudiengang();
 #endif // DB_H

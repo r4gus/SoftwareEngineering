@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource>
         <file>css/general.qss</file>
+        <file>db.conf</file>
     </qresource>
 </RCC>

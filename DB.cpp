@@ -5,6 +5,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlDriver>
 #include <fstream>
+#include <QtCore/QFile>
 
 using namespace std;
 
@@ -44,27 +45,12 @@ DB::DB()
      *
      * If no path is specified, the default config path is used.
      */
-    if(path.isEmpty()) {
-        this->_conf_path = "C:\\Users\\" + name + "\\Documents\\db.conf";
-    } else {
-        this->_conf_path = path;
-    }
-    const QString DEFAULT_DB_PATH = "C:\\Users\\" + name + "\\Documents\\db.sqlite";
-
-    conf.open(this->_conf_path.toStdString());          // open config file
-
-    /* Read the first line of the config file and
-     * set it as the path for the database to open.
-     *
-     * If the config file couldn't be opened, the standard path
-     * 'DEFAULT_DB_PATH' is used.
-    */
-    if(conf.is_open()) {
-        getline(conf, line);
-        this->_db_path = QString::fromStdString(line);
-        conf.close();
-    } else {
-        this->_db_path = DEFAULT_DB_PATH;
+    this->_conf_path = ":/db.conf";
+    QFile styleFile(this->_conf_path);
+    if (styleFile.open(QFile::ReadOnly)) {
+        QTextStream textStream(&styleFile);
+        this->_db_path = textStream.readLine();
+        styleFile.close();
     }
 
     db.setDatabaseName(this->_db_path);   // set name of the database
@@ -491,6 +477,35 @@ DB::remove(Abschlussarbeit &s)
     return DB::session().remove(sons);
 }
 
+
+
+void addStudiengang() {
+    QSqlQuery query;
+
+    QStringList s_names = {"IN-AI", "IN-IS", "IN-MI", "IN-SE", "MIN", "MLD"};
+    QStringList s_types = {"Bachelor", "Master"};
+    for(auto &sn : s_names) {
+        for(auto &st : s_types) {
+            qDebug() << "Insert: " << sn << " : " << st;
+            query.prepare("INSERT INTO studiengang (schwerpunkt, abschluss) "
+                          "VALUES (:schwerpunk, :abschluss)");
+            query.bindValue(":schwerpunk", sn);
+            query.bindValue(":abschluss", st);
+            try {
+                query.exec();
+            } catch (exception&) {
+
+            }
+
+
+            if( query.lastError().isValid() ) {
+                qDebug() << "Database error in DB::test: " << query.lastError().text();
+            }
+        }
+    }
+}
+
+
 /*!
  * \brief DB::initialize Creates all required tables if they do not exist.
  * \param db The database to operate on
@@ -627,6 +642,7 @@ DB::initialize(QSqlDatabase &db)
     return true;
 }
 
+
 /*!
  * \brief DB::test is used to populate the database tables with test data.
  * \param db The database to populate
@@ -637,27 +653,6 @@ DB::test(QSqlDatabase &db)
 {
     QSqlQuery query;
     if(!db.isValid()) return false;
-
-
-    // add studiengänge
-    QStringList s_names = {"IN-AI", "IN-IS", "IN-MI", "IN-SE", "MIN", "MLD"};
-    QStringList s_types = {"Bachelor", "Master"};
-    for(auto &sn : s_names) {
-        for(auto &st : s_types) {
-            qDebug() << "Insert: " << sn << " : " << st;
-            query.prepare("INSERT INTO studiengang (schwerpunkt, abschluss) "
-                          "VALUES (:schwerpunk, :abschluss)");
-            query.bindValue(":schwerpunk", sn);
-            query.bindValue(":abschluss", st);
-            query.exec();
-
-
-            if( query.lastError().isValid() ) {
-                qDebug() << "Database error in DB::test: " << query.lastError().text();
-                return false;
-            }
-        }
-    }
 
     // ad nutzer
     qDebug() << "Add Nutzer ---------------------------";

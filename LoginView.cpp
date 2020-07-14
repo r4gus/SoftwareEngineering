@@ -51,14 +51,6 @@ LoginView::LoginView() {
 
 void LoginView::login(bool changePassword) {
     // TODO: if first login -> changePassword = true
-    // TODO: remove debug
-    Nutzer n1("Roland", "Dietrich", "1", Nutzer::Role::dozent);
-    n1.set_password("1");
-    DB::session().add(n1);
-    Nutzer n2("Roland", "Dietrich", "2", Nutzer::Role::administrator);
-    n2.set_password("2");
-    DB::session().add(n2);
-
     bool successfulLogin = false;
     auto userName = tfUsername->text();
     auto password = tfPassword->text();
