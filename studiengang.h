@@ -27,7 +27,7 @@ public:
         _id(rhs._id), _schwerpunkt(rhs._schwerpunkt), _abschluss(rhs._abschluss){}        // copy constructor
 
     static vector<Studiengang> query_all();
-    static vector<Studiengang> query(QString &s);
+    static vector<Studiengang> query(QString s);
 
     QString toString();
     static Studiengang fromString(const QString&);

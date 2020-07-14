@@ -1,5 +1,6 @@
 #include "studiengang.h"
 #include "DB.h"
+#include "gui_utils.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVariant>
@@ -18,14 +19,13 @@
  * THIS FUNCTION IS DEPRECATED AND NO LONGER USED
  */
 std::vector<std::tuple<QString, QString>>
-key_val_split(QString &s)
-{
+key_val_split(QString &s) {
     std::vector<std::tuple<QString, QString>> vec;
     QString lhs, delComma, delEq, key, val;
     QString rhs = s;
     QString::SectionFlag flag = QString::SectionSkipEmpty;
 
-    while( rhs.size() > 0 ) {
+    while (rhs.size() > 0) {
         lhs = rhs.section(',', 0, 0, flag);
         rhs = rhs.section(',', 1, -1, flag);
 
@@ -43,8 +43,7 @@ key_val_split(QString &s)
  * \return A vector of Studiengang objects
  */
 vector<Studiengang>
-Studiengang::query_all()
-{
+Studiengang::query_all() {
     QString query_string = "";
     return Studiengang::query(query_string);
 }
@@ -59,24 +58,23 @@ Studiengang::query_all()
  * The method acts like query_all() if an empty string is provided.
  */
 vector<Studiengang>
-Studiengang::query(QString &s)
-{
+Studiengang::query(QString s) {
     vector<Studiengang> vec;
     QSqlDatabase db = QSqlDatabase::database();
     QSqlQuery query;
     QString qs;
 
-    if(!db.isValid()) throw InvalidDatabaseError();
+    if (!db.isValid()) throw InvalidDatabaseError();
 
     qs += "SELECT studiengangID, schwerpunkt, abschluss FROM studiengang ";
-    if(!s.isEmpty()) qs += "WHERE " + s + ";";
+    if (!s.isEmpty()) qs += "WHERE " + s + ";";
 
     log("Query", qs);
-    if( !query.exec(qs) ) {
+    if (!query.exec(qs)) {
         throw DatabaseTransactionError(query.lastError().text());
     }
 
-    while( query.next() ) {
+    while (query.next()) {
         int id = query.value(0).toInt();
         QString schwerpunkt = query.value(1).toString();
         QString abschluss = query.value(2).toString();
@@ -87,20 +85,22 @@ Studiengang::query(QString &s)
 }
 
 QString Studiengang::toString() {
-    return _abschluss + ": " +_schwerpunkt;
+    return _abschluss + ": " + _schwerpunkt;
 }
 
 Studiengang Studiengang::fromString(const QString &s) {
     auto l = s.split(": ");
-    return Studiengang(l[1], l[0]);
+    auto study = Studiengang(l[1], l[0]);
+    Condition condition = Condition{"schwerpunkt", study.schwerpunkt()}
+                          && Condition{"abschluss", study.abschluss()};
+    auto ret = queryOne<Studiengang>(Studiengang::query, condition.condition);
+    return ret;
 }
 
-Studiengang::operator QString() const
-{
+Studiengang::operator QString() const {
     return "{ schwerpunkt: " + _schwerpunkt + ", abschluss: " + _abschluss + "}";
 }
 
-std::ostream & operator << (std::ostream &o, const Studiengang &s)
-{
+std::ostream &operator<<(std::ostream &o, const Studiengang &s) {
     return o << QString(s).toLocal8Bit().constData();
 }

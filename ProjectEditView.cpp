@@ -144,6 +144,9 @@ ProjectEditView::ProjectEditView(int projectId, ProjectType projectType) : Proje
     cbFinished->setChecked(projectCommon.abgeschlossen());
     cbStudy->setCurrentIndex(cbStudy->findText(projectCommon.studiengang().toString()));
     btnSave->setText(tr("Speichern"));
+
+    // get ids
+    studentID = projectCommon.bearbeiter().id();
 }
 
 void ProjectEditView::save() {
@@ -151,12 +154,6 @@ void ProjectEditView::save() {
     // TODO: FIX: nutzer are not updated/changed -> When the name of the user is updated it's not updated in the DB and GUI
     // Reset state
     lblErrorMessage->setText("");
-
-    if (isEdit) {
-        auto originalTmpProject = SonstigesProjekt();
-        originalTmpProject.setId(projectID);
-        DB::session().remove(originalTmpProject);
-    }
 
     // Common
     auto title = tfTitle->text();
@@ -166,9 +163,15 @@ void ProjectEditView::save() {
     auto description = tfDescription->toMarkdown();
     auto finished = cbFinished->isChecked();
     auto study = Studiengang::fromString(cbStudy->currentText());
-    // TODO: validate input?
+
     auto professor = MainWindow::get().user;
     auto student = Nutzer(authorFirstName, authorLastName, authorFirstName + authorLastName, Nutzer::Role::student); // TODO: email?
+    try {
+        auto existingStudent = queryOne<Nutzer>(Nutzer::query, "nutzerID=" + str(studentID));
+        student.setId(existingStudent.id());
+    } catch (exception&) {
+        // Pass
+    }
     int locProjectID;
     ProjectType projectType;
 
@@ -195,18 +198,30 @@ void ProjectEditView::save() {
     projectCommon->setBearbeiter(student);
     projectCommon->setProfessor(professor);
     projectCommon->setStudiengang(study);
+    if (isEdit) {
+        projectCommon->setId(projectID);
+    }
     try {
-        auto o1 = rbTypeOther->isChecked();
-        auto o2 = rbTypeProject->isChecked();
-        auto o3 = rbTypeThesis->isChecked();
         if (rbTypeOther->isChecked()) {
-            locProjectID = DB::session().add(*projectCommon);
+            if (isEdit) {
+                locProjectID = DB::session().update(*projectCommon);
+            } else {
+                locProjectID = DB::session().add(*projectCommon);
+            }
         }
         else if (rbTypeProject->isChecked()) {
-            locProjectID = DB::session().add((Projektarbeit&)*projectCommon);
+            if (isEdit) {
+                locProjectID = DB::session().update((Projektarbeit &) *projectCommon);
+            } else {
+                locProjectID = DB::session().add((Projektarbeit &) *projectCommon);
+            }
         }
         if (rbTypeThesis->isChecked()) {
-            locProjectID = DB::session().add((Abschlussarbeit&)*projectCommon);
+            if (isEdit) {
+                locProjectID = DB::session().update((Abschlussarbeit &) *projectCommon);
+            } else {
+                locProjectID = DB::session().add((Abschlussarbeit &) *projectCommon);
+            }
         }
     } catch (exception &e) {
         lblErrorMessage->setText(tr("Fehler beim speichern: ") + e.what());

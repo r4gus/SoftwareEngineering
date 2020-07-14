@@ -48,6 +48,7 @@ private:
 
     bool isEdit;
     int projectID;
+    int studentID;
     ProjectType originalProjectType;
 
 public:
