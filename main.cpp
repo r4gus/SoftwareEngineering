@@ -13,19 +13,28 @@
 
 int main(int argc, char *argv[])
 {
+    DB::session();
+    QSqlDatabase db = QSqlDatabase::database();
+
+    if(argc > 1) {
+        if(strcmp(argv[1], "clean") == 0) {
+            DB::clean(db);      // get rid of everything
+            DB::initialize(db); // initialize db
+        } else if(strcmp(argv[1], "test") == 0) {
+            DB::clean(db);
+            DB::initialize(db);
+            DB::test(db);   // fill db with test data
+        }
+    }
+    DB::initialize(db); // initialize db
+
+
     // Translator
     QTranslator translator;
     translator.load("strings_en");
 
     QApplication a(argc, argv);
     a.installTranslator(&translator);
-
-    DB::session();
-    QSqlDatabase db = QSqlDatabase::database();
-
-    DB::clean(db);
-    DB::initialize(db);
-    DB::test(db);
 
     MainWindow::get().setMinimumSize(1000, 600);
     // Style

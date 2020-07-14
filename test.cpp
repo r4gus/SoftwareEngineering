@@ -395,7 +395,7 @@ BOOST_AUTO_TEST_SUITE(projektarbeit_suit)
 BOOST_AUTO_TEST_CASE( Projektarbeit_query_1 )
 {
     vector<Projektarbeit> vec = Projektarbeit::query_all();
-    BOOST_CHECK_EQUAL(vec.size(), 1);
+    BOOST_CHECK_EQUAL(vec.size(), 5);
 }
 
 BOOST_AUTO_TEST_CASE( Projektarbeit_query_2 )
@@ -462,7 +462,7 @@ BOOST_AUTO_TEST_SUITE(abschlussarbeit_suit)
 BOOST_AUTO_TEST_CASE( Abschlussarbeit_query_1 )
 {
     vector<Abschlussarbeit> vec = Abschlussarbeit::query_all();
-    BOOST_CHECK_EQUAL(vec.size(), 1);
+    BOOST_CHECK_EQUAL(vec.size(), 6);
 }
 
 BOOST_AUTO_TEST_CASE( Abschlussarbeit_query_2 )
@@ -522,9 +522,10 @@ BOOST_AUTO_TEST_CASE( Abschlussarbeit_update_1 )
 
 BOOST_AUTO_TEST_CASE( abschlussarbeit_delet_1 )
 {
-    QString query = "arbeit.arbeitID = 4";
+    QString query = "arbeit.titel = 'Codegenerierung mit Enterprise Architect'";
     std::vector<Abschlussarbeit> vec1 = Abschlussarbeit::query(query);
     std::vector<Abschlussarbeit> vec2 = Abschlussarbeit::query_all();
+    BOOST_REQUIRE_EQUAL(vec1.size(), 1);
     DB::session().remove(vec1[0]);
     vec1 = Abschlussarbeit::query_all();
     BOOST_CHECK_EQUAL(vec1.size(), vec2.size() - 1);

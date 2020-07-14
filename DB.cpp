@@ -732,6 +732,36 @@ DB::test(QSqlDatabase &db)
     sep_1.setBearbeiter(nutzer7);
     sep_1.setSemester(4);
 
+    QStringList list_mip_1 = {"Mensch-Maschine-Kommunikation"};
+    Studiengang mi_bachelor("IN-MI", "Bachelor");
+    Projektarbeit mip_1("Gestaltung von grafischen Benutzungsoberflächen", list_mip_1, false, "Demobeispiele mit Qt5");
+    mip_1.setStudiengang(mi_bachelor);
+    mip_1.setProfessor(nutzer3);
+    mip_1.setBearbeiter(nutzer11);
+    mip_1.setSemester(3);
+
+    QStringList list_mp_1 = {"SQL", "Relationsmodell", "MongoDB", "MySQL"};
+    Studiengang s_e_master("IN-SE", "Master");
+    Projektarbeit mp_1("NoSql-Datenbanken vs. Relationale Datenbanken - Sinnvolle Einsatzszenarien", list_mp_1, true, "");
+    mp_1.setStudiengang(s_e_master);
+    mp_1.setProfessor(nutzer3);
+    mp_1.setBearbeiter(nutzer12);
+    mp_1.setSemester(9);
+
+    QStringList list_sep_2 = {"Haskell", "Lisp (ist nicht funktional argh...)", "MOSTflexiPL", "QuickSort", "Insert-Sort", "Tree-Sort"};
+    Projektarbeit sep_2("Funktionale Programmiersprachen im Vergleich", list_sep_2, false, "Anwendungsbeispiele verschiedener Suchalgorithmen");
+    sep_2.setStudiengang(s_e_bachelor);
+    sep_2.setProfessor(nutzer2);
+    sep_2.setBearbeiter(nutzer15);
+    sep_2.setSemester(6);
+
+    QStringList list_sep_3 = {"Stack", "List", "Queue", "Tree", "Graph"};
+    Projektarbeit sep_3("Abstrakte Datentypen in MOSTflexiPL", list_sep_3, true, "Programmbibliothek mit klassischen ADTs");
+    sep_3.setStudiengang(s_e_bachelor);
+    sep_3.setProfessor(nutzer2);
+    sep_3.setBearbeiter(nutzer16);
+    sep_3.setSemester(2);
+
     // Abschlussarbeit
     QStringList list_ba_1 = {"Softwareentwicklung", "Modellierung"};
     QDate begin(2020, 9, 1);
@@ -743,11 +773,71 @@ DB::test(QSqlDatabase &db)
     ba_1.setProfessor(nutzer1);
     ba_1.setBearbeiter(nutzer5);
 
+    QStringList list_ba_2 = {"Softwareentwicklung", "Konfigurationsmanagement", "SQL"};
+    QDate begin_ba_2(2020, 9, 1);
+    QDate end_ba_2(2021, 3, 1);
+    Abschlussarbeit ba_2("Datenbanken für die Software-Versionierung", list_ba_2, false, "");
+    ba_2.setEnd(end_ba_2);
+    ba_2.setBegin(begin_ba_2);
+    ba_2.setStudiengang(s_e_bachelor);
+    ba_2.setProfessor(nutzer3);
+    ba_2.setBearbeiter(nutzer9);
+
+    QStringList list_ba_3 = {"Funktionale Programmiersprachen"};
+    QDate begin_ba_3(2016, 9, 1);
+    QDate end_ba_3(2017, 3, 30);
+    Abschlussarbeit ba_3("Ein 2-Pass-Compiler für MOSTflexiPL", list_ba_3, false, "Abgebrochen");
+    ba_3.setEnd(end_ba_3);
+    ba_3.setBegin(begin_ba_3);
+    ba_3.setStudiengang(s_e_bachelor);
+    ba_3.setProfessor(nutzer2);
+    ba_3.setBearbeiter(nutzer13);
+
+    QDate begin_ba_4(2017, 9, 1);
+    QDate end_ba_4(2018, 3, 30);
+    Abschlussarbeit ba_4("Ein 2-Pass-Compiler für MOSTflexiPL", list_ba_3, true, "");
+    ba_4.setEnd(end_ba_4);
+    ba_4.setBegin(begin_ba_4);
+    ba_4.setStudiengang(s_e_master);
+    ba_4.setProfessor(nutzer2);
+    ba_4.setBearbeiter(nutzer14);
+
+    QStringList list_ma_1 = {"Automotive", "Softwaretest"};
+    QDate begin_ma_1(2019, 9, 1);
+    QDate end_ma_1(2020, 3, 1);
+    Abschlussarbeit ma_1("Testautomatisierung für Getriebesteuerungen", list_ma_1, true, "");
+    ma_1.setEnd(end_ma_1);
+    ma_1.setBegin(begin_ma_1);
+    ma_1.setStudiengang(s_e_master);
+    ma_1.setProfessor(nutzer1);
+    ma_1.setBearbeiter(nutzer6);
+    ma_1.setFirma("Bosch");
+
+    QStringList list_ma_2 = {"Künstliche Intelligenz"};
+    QDate begin_ma_2(2020, 3, 1);
+    QDate end_ma_2(2020, 8, 28);
+    Studiengang ai_master("IN-AI", "Master");
+    Abschlussarbeit ma_2("Intelligent lernende Agenten", list_ma_2, false, "");
+    ma_2.setEnd(end_ma_2);
+    ma_2.setBegin(begin_ma_2);
+    ma_2.setStudiengang(ai_master);
+    ma_2.setProfessor(nutzer3);
+    ma_2.setBearbeiter(nutzer10);
+
     try {
         DB::session().add(arbeit1);
         DB::session().add(e_motion);
+        DB::session().add(mip_1);
+        DB::session().add(mp_1);
         DB::session().add(sep_1);
+        DB::session().add(sep_2);
+        DB::session().add(sep_3);
         DB::session().add(ba_1);
+        DB::session().add(ba_2);
+        DB::session().add(ba_3);
+        DB::session().add(ba_4);
+        DB::session().add(ma_1);
+        DB::session().add(ma_2);
     } catch(exception &e) {
         if( query.lastError().isValid() ) {
             qDebug() << "Database error in DB::test: " << query.lastError().text();
