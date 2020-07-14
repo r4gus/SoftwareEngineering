@@ -44,6 +44,7 @@ ProjectEditView::ProjectEditView()
             tfTags->setPlaceholderText("tag1;tag2");
             cFields->addRow(tr("Stichwortliste"), tfTags);
             tfDescription = new QTextEdit;
+            tfDescription->setPlaceholderText(tr("Beschreibung der Arbeit mit **markdown** support."));
             cFields->addRow(tr("Beschreibung:"), tfDescription);
             cbFinished = new QCheckBox;
             cFields->addRow(tr("Abgeschlossen:"), cbFinished);
@@ -149,9 +150,15 @@ ProjectEditView::ProjectEditView(int projectId, ProjectType projectType) : Proje
     studentID = projectCommon.bearbeiter().id();
 }
 
+void ProjectEditView::validateInputField(const QString &content, const QString &name, bool* error) {
+    if (content.size() == 0) {
+        auto errorMsg = lblErrorMessage->text() + "\n" + name + tr(" ist ein Pflichtfeld");
+        lblErrorMessage->setText(errorMsg);
+        *error = true;
+    }
+}
+
 void ProjectEditView::save() {
-    // TODO: proper update
-    // TODO: FIX: nutzer are not updated/changed -> When the name of the user is updated it's not updated in the DB and GUI
     // Reset state
     lblErrorMessage->setText("");
 
@@ -163,6 +170,15 @@ void ProjectEditView::save() {
     auto description = tfDescription->toMarkdown();
     auto finished = cbFinished->isChecked();
     auto study = Studiengang::fromString(cbStudy->currentText());
+
+    // Input validation
+    bool error = false;
+    validateInputField(title, tr("Titel"), &error);
+    validateInputField(authorFirstName, tr("Bearbeiter Vorname"), &error);
+    validateInputField(authorLastName, tr("Bearbeiter Nachname"), &error);
+    if (error) {
+        return;
+    }
 
     auto professor = MainWindow::get().user;
     auto student = Nutzer(authorFirstName, authorLastName, authorFirstName + authorLastName, Nutzer::Role::student); // TODO: email?

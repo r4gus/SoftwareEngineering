@@ -51,6 +51,8 @@ private:
     int studentID;
     ProjectType originalProjectType;
 
+    void validateInputField(const QString &content, const QString &name, bool *error);
+
 public:
     ProjectEditView();
     ProjectEditView(int projectId, ProjectType projectType);
