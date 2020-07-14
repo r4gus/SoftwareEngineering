@@ -22,12 +22,12 @@ QLabel:disabled {
     color: #aaaaaa;
 }
 
-
 QPushButton {
     background-color: #009688;
     color: #e3e3e3;
 }
 
+QTextEdit[readOnly="false"],
 QLineEdit {
     background-color: #2d2d2d;
     color: #e3e3e3;
@@ -35,14 +35,23 @@ QLineEdit {
     padding: 3px;
 }
 
+QTextEdit[readOnly="false"],
 QLineEdit:focus {
     border: 2px solid #487c7f;
     background-color: #2a2a2a;
 }
 
+QTextEdit[readOnly="false"]:disabled,
 QLineEdit:disabled {
     border: 2px solid #333333;
     background-color: #555555;
+}
+
+QTextEdit[readOnly="true"] {
+    background-color: transparent;
+    border: 0px solid transparent;
+    color: #e3e3e3;
+    padding: 0px;
 }
 
 QComboBox {

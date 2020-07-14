@@ -6,6 +6,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QDebug>
 #include <QtGui/QRegExpValidator>
+#include <QtWidgets/QTextEdit>
 #include "ProjectEditView.h"
 #include "gui_utils.h"
 #include "mainwindow.h"
@@ -40,8 +41,9 @@ ProjectEditView::ProjectEditView()
             tfAuthorLastName = new QLineEdit;
             cFields->addRow(tr("Bearbeiter Nachname"), tfAuthorLastName);
             tfTags = new QLineEdit;
+            tfTags->setPlaceholderText("tag1;tag2");
             cFields->addRow(tr("Stichwortliste"), tfTags);
-            tfDescription = new QLineEdit;
+            tfDescription = new QTextEdit;
             cFields->addRow(tr("Beschreibung:"), tfDescription);
             cbFinished = new QCheckBox;
             cFields->addRow(tr("Abgeschlossen:"), cbFinished);
@@ -161,7 +163,7 @@ void ProjectEditView::save() {
     auto authorFirstName = tfAuthorFirstName->text();
     auto authorLastName = tfAuthorLastName->text();
     auto tags = tfTags->text().split(TAGS_SEPARATOR);
-    auto description = tfDescription->text();
+    auto description = tfDescription->toMarkdown();
     auto finished = cbFinished->isChecked();
     auto study = Studiengang::fromString(cbStudy->currentText());
     // TODO: validate input?

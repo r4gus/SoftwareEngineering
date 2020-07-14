@@ -14,6 +14,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QComboBox>
+#include <QTextEdit>
 #include "sonstigesprojekt.h"
 #include "ProjectView.h"
 
@@ -27,7 +28,7 @@ private:
     QLineEdit* tfAuthorFirstName;
     QLineEdit* tfAuthorLastName;
     QLineEdit* tfTags;
-    QLineEdit* tfDescription;
+    QTextEdit* tfDescription;
     QCheckBox* cbFinished;
     QRadioButton* rbTypeThesis;
     QRadioButton* rbTypeProject;

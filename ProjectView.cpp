@@ -17,6 +17,7 @@ ProjectView::ProjectView(const SonstigesProjekt &project, QVBoxLayout *parent, b
     cRoot = new QHBoxLayout;
 
     setLayout(cRoot);
+    setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
     // STYLE
     setFrameShape(QFrame::Shape::StyledPanel);
     setLineWidth(3);
@@ -56,7 +57,15 @@ void ProjectView::build(const SonstigesProjekt *p) {
         cLeft->addRow(tr("Bearbeiter:"), new QLabel(project.bearbeiter().fullName()));
         cLeft->addRow(tr("Stichworte:"), new QLabel(project.stichwortliste().join(" - ")));
         cLeft->addRow(tr("Betreuer:"), new QLabel(project.professor().fullName()));
-        cLeft->addRow(tr("Beschreibung:"), new QLabel(project.erlaeuterung()));
+        auto lblDescription = new QTextEdit();
+        lblDescription->setMarkdown(project.erlaeuterung());
+        lblDescription->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Minimum));
+        lblDescription->setReadOnly(true);
+        lblDescription->setAttribute(Qt::WA_DontShowOnScreen);
+        lblDescription->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        lblDescription->show();
+        lblDescription->setFixedHeight(lblDescription->document()->size().height() + lblDescription->contentsMargins().bottom() + lblDescription->contentsMargins().top());
+        cLeft->addRow(tr("Beschreibung:"), lblDescription);
         cLeft->addRow(tr("Status:"),
                       new QLabel(project.abgeschlossen() ? tr("Abgeschlossen") : tr("In Arbeit")));
         cLeft->addRow(tr("Studiengang:"),

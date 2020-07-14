@@ -101,7 +101,6 @@ void SearchView::search() {
                            Condition{"student.NName", tfSearchAuthor->text()})
                        && (Condition{"prof.VName", tfSearchLecturer->text()} ||
                            Condition{"prof.NName", tfSearchLecturer->text()});
-    // TODO: add begin and end
     auto query = conditionBuilder.condition;
     if (allTypes || projectType == OTHER) {
         auto projects = SonstigesProjekt::query(query);
